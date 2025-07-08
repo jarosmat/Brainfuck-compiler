@@ -3,5 +3,5 @@ image: mcr.microsoft.com/dotnet/sdk:9.0.301-alpine3.22
 unittests:
   script:
     - dotnet new install xunit.v3.templates
-    - dotnet test /UnitTests
+    - dotnet test
     
