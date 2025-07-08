@@ -4,5 +4,6 @@ unittests:
   script:
     - dotnet new install xunit.v3.templates
     - cd UnitTests
+    - pwd
     - dotnet test
     
