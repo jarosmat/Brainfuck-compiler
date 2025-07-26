@@ -1,4 +1,5 @@
-﻿namespace BytecodeInterpreter;
+﻿using System.Text;
+namespace BytecodeInterpreter;
 
 public class SimpleCodeRunner : CodeRunner
 {
