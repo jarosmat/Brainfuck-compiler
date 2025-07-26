@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BytecodeGenerator", "Byteco
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BytecodeInterpreter", "BytecodeInterpreter\BytecodeInterpreter.csproj", "{E37A588E-B19A-4501-A0F7-4683C9A259C6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{E37A588E-B19A-4501-A0F7-4683C9A259C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E37A588E-B19A-4501-A0F7-4683C9A259C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E37A588E-B19A-4501-A0F7-4683C9A259C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
