@@ -19,6 +19,7 @@
     </ItemGroup>
     
     <ItemGroup>
+      <ProjectReference Include="..\BytecodeGenerator\BytecodeGenerator.csproj" />
       <ProjectReference Include="..\BytecodeInterpreter\BytecodeInterpreter.csproj" />
     </ItemGroup>
 
