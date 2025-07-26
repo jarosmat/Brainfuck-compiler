@@ -26,7 +26,7 @@ public class SimpleCodeRunnerTests
         string stringToPass = new string(charToPass);
         using (IOHandler consoleOut = new IOHandler(stringToPass))
         {
-            SimpleCodeRunner simpleCodeRunner = new SimpleCodeRunner([0x05, 0x06, 0x00, 0x0B, 0x03, 0x00, 0x02, 0x01, 0x07, 0x00, 0x01, 0x03, 0x04]);
+            SimpleCodeRunner simpleCodeRunner = new SimpleCodeRunner([0x05, 0x06, 0x0F, 0x00, 0x00, 0x00, 0x03, 0x00, 0x02, 0x01, 0x07, 0x01, 0x00, 0x00, 0x00, 0x03, 0x04]);
             Interpreter interpreter = new Interpreter();
             interpreter.Run(simpleCodeRunner);
             string output = consoleOut.GetOutput();
