@@ -8,8 +8,8 @@ public class SimpleCodeRunner : CodeRunner
      * 0x01 id Decrement
      * 0x02 is Shift Data pointer left
      * 0x03 is Shift Data pointer right
-     * 0x04 is Print value to stdin
-     * 0x05 is Read value from stdin
+     * 0x04 is Print value to stdin "."
+     * 0x05 is Read value from stdin ","
      * 0x06 is left bracket, it has 2 byte parameter, where address of corresponding right bracket is set, parameter is MSB first
      * 0x07 is right bracket, it has 2 byte parameter, where address of corresponding left bracket is set, parameter is MSB first
      */
