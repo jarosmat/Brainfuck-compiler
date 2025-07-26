@@ -1,5 +1,4 @@
-﻿using System.Text;
-namespace BytecodeInterpreter;
+﻿namespace BytecodeInterpreter;
 
 public class SimpleCodeRunner : CodeRunner
 {
@@ -14,7 +13,7 @@ public class SimpleCodeRunner : CodeRunner
      * 0x06 is left bracket, it has 2 byte parameter, where address of corresponding right bracket is set, parameter is MSB first
      * 0x07 is right bracket, it has 2 byte parameter, where address of corresponding left bracket is set, parameter is MSB first
      */
-
+    private const int AddressLenght = 2;
     public SimpleCodeRunner(byte[] code) : base(code){}
 
     public SimpleCodeRunner(string codeAddress) : base(codeAddress){}
@@ -66,11 +65,11 @@ public class SimpleCodeRunner : CodeRunner
     {
         if (Memory[DataPointer] != 0)
         {
-            InstructionPointer += 2;
+            InstructionPointer += AddressLenght;
         }
         else
         {
-            InstructionPointer = (uint)MergeBytes(Code[InstructionPointer], Code[InstructionPointer + 1]);
+            InstructionPointer = MergeBytes(Code[InstructionPointer], Code[InstructionPointer + 1]);
         }
     }
 
@@ -78,11 +77,11 @@ public class SimpleCodeRunner : CodeRunner
     {
         if (Memory[DataPointer] == 0)
         {
-            InstructionPointer += 2;
+            InstructionPointer += AddressLenght;
         }
         else
         {
-            InstructionPointer = (uint)MergeBytes(Code[InstructionPointer], Code[InstructionPointer + 1]);
+            InstructionPointer = MergeBytes(Code[InstructionPointer], Code[InstructionPointer + 1]);
         }
     }
 }
