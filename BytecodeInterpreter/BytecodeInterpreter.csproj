@@ -7,4 +7,8 @@
         <RootNamespace>BytecodeInterpreter</RootNamespace>
     </PropertyGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Utilities\Utilities.csproj" />
+    </ItemGroup>
+
 </Project>
