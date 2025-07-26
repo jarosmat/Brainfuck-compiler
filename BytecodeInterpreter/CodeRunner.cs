@@ -6,16 +6,26 @@ public abstract class CodeRunner
 {
     private static readonly int MemorySize = 30000;
     protected byte[] Memory = new byte[MemorySize];
-    protected uint DataPointer = 0;
+    private uint _dataPointer;
+
+    protected uint DataPointer
+    {
+        get => _dataPointer;
+        set => _dataPointer = value % (uint)MemorySize;
+    }
     public uint InstructionPointer { get; set; }
     public readonly byte[] Code;
     
     public delegate void RunFunc();
     public abstract RunFunc[] GetDelegates();
-    protected UTF8Encoding Utf8 = new UTF8Encoding();
+    protected readonly UTF8Encoding Utf8 = new UTF8Encoding();
 
     protected CodeRunner(string codeAddress)
     {
+        if (!File.Exists(codeAddress))
+        {
+            throw new FileNotFoundException();
+        }
         Code = File.ReadAllBytes(codeAddress);
     }
 
@@ -29,9 +39,9 @@ public abstract class CodeRunner
         return (uint)Code.Length;
     }
 
-    protected static int MergeBytes(byte moreSignificant, byte lessSignificant)
+    protected static uint MergeBytes(byte moreSignificant, byte lessSignificant)
     {
-        int result = moreSignificant << 8;
+        uint result = (uint)moreSignificant << 8;
         result = result | lessSignificant;
         return result;
     }
