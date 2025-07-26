@@ -45,13 +45,20 @@ public class SimpleCodeRunner : CodeRunner
 
     private void PrintValue()
     {
-        Console.Write(Utf8.GetChars(Memory, (int)DataPointer, 1));
-        // Console.Write(Memory[DataPointer].ToString());
+        byte[] bytes = [Memory[DataPointer]];
+        Console.Write(Utf8.GetString(bytes));
     }
 
     private void ReadValue()
     {
-        Memory[DataPointer] = (byte)Console.Read();
+        int intIn = Console.Read();
+        char[] charIn = [(char)intIn];
+        byte[] bytes = Utf8.GetBytes(charIn);
+        if (bytes[0] == 13)
+        {
+            bytes[0] = 10;
+        }
+        Memory[DataPointer] = bytes[0];
     }
 
     private void LoopStart()
