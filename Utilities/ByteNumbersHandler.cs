@@ -12,6 +12,15 @@ public static class ByteNumbersHandler
         return result;
     }
 
+    public static void SetBytesInList(List<byte> bytes, int index, int count, uint number)
+    {
+        byte[] bytesToChange = GetBytes(number);
+        for (int i = 0; i < count; i++)
+        {
+            bytes[index + i] = bytesToChange[i];
+        }
+    }
+
     public static uint GetNumber(byte[] bytes)
     {
         if (!BitConverter.IsLittleEndian)
@@ -21,5 +30,22 @@ public static class ByteNumbersHandler
 
         uint result = BitConverter.ToUInt32(bytes);
         return result;
-    } 
+    }
+
+    public static uint GetNumber(byte[] bytes, uint index, int count)
+    {
+        return GetNumber(GetByteSpan(bytes, index, count));
+    }
+
+    public static byte[] GetByteSpan(byte[] bytes, uint index, int count)
+    {
+        byte[] result = new byte[count];
+        int newIndex = (int)index;
+        for (int i = 0; i < count; i++)
+        {
+            result[i] = bytes[index + i];
+        }
+
+        return result;
+    }
 }
