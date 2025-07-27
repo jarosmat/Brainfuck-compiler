@@ -1,4 +1,5 @@
-﻿namespace BytecodeInterpreter;
+﻿using Utilities;
+namespace BytecodeInterpreter;
 
 public class SimpleCodeRunner : CodeRunner
 {
@@ -69,19 +70,12 @@ public class SimpleCodeRunner : CodeRunner
         }
         else
         {
-            InstructionPointer = MergeBytes(Code[InstructionPointer], Code[InstructionPointer + 1]);
+            InstructionPointer = ByteNumbersHandler.GetNumber(Code, InstructionPointer, AddressLenght);
         }
     }
 
     private void IterationEnd()
     {
-        if (Memory[DataPointer] == 0)
-        {
-            InstructionPointer += AddressLenght;
-        }
-        else
-        {
-            InstructionPointer = MergeBytes(Code[InstructionPointer], Code[InstructionPointer + 1]);
-        }
+        InstructionPointer = ByteNumbersHandler.GetNumber(Code, InstructionPointer, AddressLenght);
     }
 }

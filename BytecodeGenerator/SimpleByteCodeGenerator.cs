@@ -1,4 +1,5 @@
 using System.Data;
+using Utilities;
 
 namespace BytecodeGenerator;
 
@@ -15,6 +16,8 @@ public class SimpleByteCodeGenerator
         LeftBracket = 0x06,
         RightBracket = 0x07
     }
+    
+    private const int AddressLenght = 4;
     
     private class Bracket(uint address)
     {
@@ -66,11 +69,13 @@ public class SimpleByteCodeGenerator
                     bytes.Add((byte)Instructions.ReadValue);
                     break;
                 case '[':
+                    bytes.Add((byte)Instructions.LeftBracket);
                     Bracket bracket = new Bracket((uint)bytes.Count);
                     bracketStack.Add(bracket);
-                    bytes.Add((byte)Instructions.LeftBracket);
-                    bytes.Add(0x00);
-                    bytes.Add(0x00);
+                    for (int i = 0; i < AddressLenght; i++)
+                    {
+                        bytes.Add(0x00);
+                    }
                     break;
                 case ']':
                     if (bracketStack.Count == 0)
@@ -78,24 +83,16 @@ public class SimpleByteCodeGenerator
                         throw new SyntaxErrorException("Invalid parenthesis");
                     }
                     bytes.Add((byte)Instructions.RightBracket);
+                    
                     int lastItem = bracketStack.Count - 1;
                     Bracket bracketPopped = bracketStack[lastItem];
                     bracketStack.RemoveAt(lastItem);
-                    byte[] leftAddressBytes = BitConverter.GetBytes(bracketPopped.Address);
-                    byte[] rightAddressBytes = BitConverter.GetBytes(bytes.Count + 2);
-                    if (!BitConverter.IsLittleEndian)
+                    
+                    ByteNumbersHandler.SetBytesInList(bytes, (int)bracketPopped.Address, AddressLenght, (uint)bytes.Count + AddressLenght);
+                    
+                    foreach (byte byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1))
                     {
-                        bytes.Add(leftAddressBytes[^1]);
-                        bytes.Add(leftAddressBytes[^2]);
-                        bytes[(int)bracketPopped.Address + 1] = rightAddressBytes[^1];
-                        bytes[(int)bracketPopped.Address + 2] = rightAddressBytes[^2];
-                    }
-                    else
-                    {
-                        bytes.Add(leftAddressBytes[1]);
-                        bytes.Add(leftAddressBytes[0]);
-                        bytes[(int)bracketPopped.Address + 1] = rightAddressBytes[1];
-                        bytes[(int)bracketPopped.Address + 2] = rightAddressBytes[0];
+                        bytes.Add(byteToAdd);
                     }
                     break;
                 }
