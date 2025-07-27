@@ -38,11 +38,4 @@ public abstract class CodeRunner
     {
         return (uint)Code.Length;
     }
-
-    protected static uint MergeBytes(byte moreSignificant, byte lessSignificant)
-    {
-        uint result = (uint)moreSignificant << 8;
-        result = result | lessSignificant;
-        return result;
-    }
 }
