@@ -38,4 +38,22 @@ public abstract class CodeRunner
     {
         return (uint)Code.Length;
     }
+    
+    protected void PrintValue()
+    {
+        byte[] bytes = [Memory[DataPointer]];
+        Console.Write(Utf8.GetString(bytes));
+    }
+
+    protected void ReadValue()
+    {
+        int intIn = Console.Read();
+        char[] charIn = [(char)intIn];
+        byte[] bytes = Utf8.GetBytes(charIn);
+        if (bytes[0] == 13)
+        {
+            bytes[0] = 10;
+        }
+        Memory[DataPointer] = bytes[0];
+    }
 }

@@ -44,24 +44,6 @@ public class SimpleCodeRunner : CodeRunner
         DataPointer -= 1;
     }
 
-    private void PrintValue()
-    {
-        byte[] bytes = [Memory[DataPointer]];
-        Console.Write(Utf8.GetString(bytes));
-    }
-
-    private void ReadValue()
-    {
-        int intIn = Console.Read();
-        char[] charIn = [(char)intIn];
-        byte[] bytes = Utf8.GetBytes(charIn);
-        if (bytes[0] == 13)
-        {
-            bytes[0] = 10;
-        }
-        Memory[DataPointer] = bytes[0];
-    }
-
     private void LoopStart()
     {
         if (Memory[DataPointer] != 0)
