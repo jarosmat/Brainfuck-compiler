@@ -19,7 +19,7 @@ public class IOHandler : IDisposable
 
     public string GetOutput()
     {
-        return _newOutput.ToString();
+        return _newOutput.GetStringBuilder().ToString();
     }
 
     public void Dispose()
