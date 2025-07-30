@@ -21,6 +21,14 @@ public static class ByteNumbersHandler
         }
     }
 
+    public static void AddBytesToList(List<byte> bytes, uint number)
+    {
+        foreach (byte byteToAdd in ByteNumbersHandler.GetBytes(number))
+        {
+            bytes.Add(byteToAdd);
+        }
+    }
+    
     public static uint GetNumber(byte[] bytes)
     {
         if (!BitConverter.IsLittleEndian)
