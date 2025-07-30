@@ -3,90 +3,70 @@ using Utilities;
 
 namespace BytecodeGenerator;
 
-public class SimpleByteCodeGenerator
+public enum SimpleInstructions
 {
-    private enum Instructions
-    {
-        Increment = 0x00,
-        Decrement = 0x01,
-        ShiftDataLeft = 0x02,
-        ShiftDataRight = 0x03,
-        PrintValue = 0x04,
-        ReadValue = 0x05,
-        LeftBracket = 0x06,
-        RightBracket = 0x07
-    }
+    Increment = 0x00,
+    Decrement = 0x01,
+    ShiftDataLeft = 0x02,
+    ShiftDataRight = 0x03,
+    PrintValue = 0x04,
+    ReadValue = 0x05,
+    LeftBracket = 0x06,
+    RightBracket = 0x07
+}
+public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
+{
     
-    private const int AddressLenght = 4;
-    
-    private class Bracket(uint address)
-    {
-        public uint Address { get; private set; } = address;
-    }
 
-    private readonly TextReader _streamReader;
+    public SimpleByteCodeGenerator(string fileName) : base(fileName) { }
 
-    public SimpleByteCodeGenerator(string fileName)
-    {
-        if (!File.Exists(fileName))
-        {
-            throw new FileNotFoundException();
-        }
+    public SimpleByteCodeGenerator(TextReader streamReader) : base(streamReader) { }
 
-        _streamReader = new StreamReader(fileName);
-    }
-
-    public SimpleByteCodeGenerator(TextReader streamReader)
-    {
-        _streamReader = streamReader;
-    }
-
-    public byte[] CreateByteCode()
+    public override byte[] CreateByteCode()
     {
         List<byte> bytes = new List<byte>();
-        List<Bracket> bracketStack = new List<Bracket>();
         int currChar = _streamReader.Read();
         while (currChar != -1)
         {
             switch (currChar)
             {
                 case '+':
-                    bytes.Add((byte)Instructions.Increment);
+                    bytes.Add((byte)SimpleInstructions.Increment);
                     break;
                 case '-':
-                    bytes.Add((byte)Instructions.Decrement);
+                    bytes.Add((byte)SimpleInstructions.Decrement);
                     break;
                 case '<':
-                    bytes.Add((byte)Instructions.ShiftDataLeft);
+                    bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
                     break;
                 case '>':
-                    bytes.Add((byte)Instructions.ShiftDataRight);
+                    bytes.Add((byte)SimpleInstructions.ShiftDataRight);
                     break;
                 case '.':
-                    bytes.Add((byte)Instructions.PrintValue);
+                    bytes.Add((byte)SimpleInstructions.PrintValue);
                     break;
                 case ',':
-                    bytes.Add((byte)Instructions.ReadValue);
+                    bytes.Add((byte)SimpleInstructions.ReadValue);
                     break;
                 case '[':
-                    bytes.Add((byte)Instructions.LeftBracket);
+                    bytes.Add((byte)SimpleInstructions.LeftBracket);
                     Bracket bracket = new Bracket((uint)bytes.Count);
-                    bracketStack.Add(bracket);
+                    _bracketStack.Add(bracket);
                     for (int i = 0; i < AddressLenght; i++)
                     {
                         bytes.Add(0x00);
                     }
                     break;
                 case ']':
-                    if (bracketStack.Count == 0)
+                    if (_bracketStack.Count == 0)
                     {
                         throw new SyntaxErrorException("Invalid parenthesis");
                     }
-                    bytes.Add((byte)Instructions.RightBracket);
+                    bytes.Add((byte)SimpleInstructions.RightBracket);
                     
-                    int lastItem = bracketStack.Count - 1;
-                    Bracket bracketPopped = bracketStack[lastItem];
-                    bracketStack.RemoveAt(lastItem);
+                    int lastItem = _bracketStack.Count - 1;
+                    Bracket bracketPopped = _bracketStack[lastItem];
+                    _bracketStack.RemoveAt(lastItem);
                     
                     ByteNumbersHandler.SetBytesInList(bytes, (int)bracketPopped.Address, AddressLenght, (uint)bytes.Count + AddressLenght);
                     
@@ -99,7 +79,7 @@ public class SimpleByteCodeGenerator
                 currChar = _streamReader.Read();
         }
 
-        if (bracketStack.Count != 0)
+        if (_bracketStack.Count != 0)
         {
             throw new SyntaxErrorException("Invalid parenthesis");
         }
