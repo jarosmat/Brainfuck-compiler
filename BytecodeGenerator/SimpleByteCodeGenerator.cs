@@ -1,4 +1,5 @@
 using System.Data;
+using BytecodeInterpreter;
 using Utilities;
 
 namespace BytecodeGenerator;
@@ -16,11 +17,11 @@ public enum SimpleInstructions
 }
 public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
 {
-    
+    private const Fingerprints Fingerprint = Fingerprints.SimpleByteCode;
 
-    public SimpleByteCodeGenerator(string fileName) : base(fileName) { }
+    public SimpleByteCodeGenerator(string fileName) : base(fileName, Fingerprint) { }
 
-    public SimpleByteCodeGenerator(TextReader streamReader) : base(streamReader) { }
+    public SimpleByteCodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint) { }
 
     public override byte[] CreateByteCode()
     {

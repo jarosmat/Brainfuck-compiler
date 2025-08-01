@@ -1,4 +1,5 @@
 using System.Data;
+using BytecodeInterpreter;
 using Utilities;
 
 namespace BytecodeGenerator;
@@ -7,12 +8,11 @@ namespace BytecodeGenerator;
 public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
 {
     private const int MemoryShiftParameterLenght = 4;
+    private const Fingerprints Fingerprint = Fingerprints.FirstLevelByteCode;
     
-    
+    public FirstLevelBytecodeGenerator(string fileName) : base(fileName, Fingerprint) { }
 
-    public FirstLevelBytecodeGenerator(string fileName) : base(fileName) { }
-
-    public FirstLevelBytecodeGenerator(TextReader streamReader) : base(streamReader){ }
+    public FirstLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
 
     private void AddOperation(List<byte> bytes, int charToAdd, uint count)
     {
