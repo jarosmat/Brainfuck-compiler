@@ -66,7 +66,6 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
 
     public override byte[] CreateByteCode()
     {
-        List<byte> bytes = new List<byte>();
         int currChar = _streamReader.Read();
         int lastChar = 0;
         uint charCount = 1;
@@ -74,13 +73,13 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
         {
             if (currChar != lastChar)
             {
-                AddOperation(bytes, lastChar, charCount);
+                AddOperation(Bytes, lastChar, charCount);
                 lastChar = currChar;
                 charCount = 1;
             }
             else if (lastChar == '.' || lastChar == ',' || lastChar == '[' || lastChar == ']')
             {
-                AddOperation(bytes, lastChar, charCount);
+                AddOperation(Bytes, lastChar, charCount);
             }
             else
             {
@@ -90,12 +89,12 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
             currChar = _streamReader.Read();
         }
         
-        AddOperation(bytes, lastChar, charCount);
+        AddOperation(Bytes, lastChar, charCount);
         
         if (_bracketStack.Count != 0)
         {
             throw new SyntaxErrorException("Invalid parenthesis");
         }
-        return bytes.ToArray();
+        return Bytes.ToArray();
     }
 }

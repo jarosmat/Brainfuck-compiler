@@ -25,37 +25,37 @@ public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
 
     public override byte[] CreateByteCode()
     {
-        List<byte> bytes = new List<byte>();
+
         int currChar = _streamReader.Read();
         while (currChar != -1)
         {
             switch (currChar)
             {
                 case '+':
-                    bytes.Add((byte)SimpleInstructions.Increment);
+                    Bytes.Add((byte)SimpleInstructions.Increment);
                     break;
                 case '-':
-                    bytes.Add((byte)SimpleInstructions.Decrement);
+                    Bytes.Add((byte)SimpleInstructions.Decrement);
                     break;
                 case '<':
-                    bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
+                    Bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
                     break;
                 case '>':
-                    bytes.Add((byte)SimpleInstructions.ShiftDataRight);
+                    Bytes.Add((byte)SimpleInstructions.ShiftDataRight);
                     break;
                 case '.':
-                    bytes.Add((byte)SimpleInstructions.PrintValue);
+                    Bytes.Add((byte)SimpleInstructions.PrintValue);
                     break;
                 case ',':
-                    bytes.Add((byte)SimpleInstructions.ReadValue);
+                    Bytes.Add((byte)SimpleInstructions.ReadValue);
                     break;
                 case '[':
-                    bytes.Add((byte)SimpleInstructions.LeftBracket);
-                    Bracket bracket = new Bracket((uint)bytes.Count);
+                    Bytes.Add((byte)SimpleInstructions.LeftBracket);
+                    Bracket bracket = new Bracket((uint)Bytes.Count);
                     _bracketStack.Add(bracket);
                     for (int i = 0; i < AddressLenght; i++)
                     {
-                        bytes.Add(0x00);
+                        Bytes.Add(0x00);
                     }
                     break;
                 case ']':
@@ -63,17 +63,17 @@ public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
                     {
                         throw new SyntaxErrorException("Invalid parenthesis");
                     }
-                    bytes.Add((byte)SimpleInstructions.RightBracket);
+                    Bytes.Add((byte)SimpleInstructions.RightBracket);
                     
                     int lastItem = _bracketStack.Count - 1;
                     Bracket bracketPopped = _bracketStack[lastItem];
                     _bracketStack.RemoveAt(lastItem);
                     
-                    ByteNumbersHandler.SetBytesInList(bytes, (int)bracketPopped.Address, AddressLenght, (uint)bytes.Count + AddressLenght);
+                    ByteNumbersHandler.SetBytesInList(Bytes, (int)bracketPopped.Address, AddressLenght, (uint)Bytes.Count + AddressLenght);
                     
                     foreach (byte byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1))
                     {
-                        bytes.Add(byteToAdd);
+                        Bytes.Add(byteToAdd);
                     }
                     break;
                 }
@@ -84,6 +84,6 @@ public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
         {
             throw new SyntaxErrorException("Invalid parenthesis");
         }
-        return bytes.ToArray();
+        return Bytes.ToArray();
     }
 }
