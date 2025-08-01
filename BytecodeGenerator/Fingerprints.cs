@@ -2,6 +2,6 @@ namespace BytecodeInterpreter;
 
 public enum Fingerprints
 {
-    SimpleByteCode,
+        SimpleByteCode = 0,
     FirstLevelByteCode
 }
