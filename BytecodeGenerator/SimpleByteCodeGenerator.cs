@@ -4,17 +4,6 @@ using Utilities;
 
 namespace BytecodeGenerator;
 
-public enum SimpleInstructions
-{
-    Increment = 0x00,
-    Decrement = 0x01,
-    ShiftDataLeft = 0x02,
-    ShiftDataRight = 0x03,
-    PrintValue = 0x04,
-    ReadValue = 0x05,
-    LeftBracket = 0x06,
-    RightBracket = 0x07
-}
 public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
 {
     private const Fingerprints Fingerprint = Fingerprints.SimpleByteCode;
