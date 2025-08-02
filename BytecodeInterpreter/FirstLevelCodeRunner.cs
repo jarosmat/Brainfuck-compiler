@@ -14,9 +14,9 @@ public class FirstLevelCodeRunner : CodeRunner
     * 0x06 is left bracket, it has 4 byte parameter, where address of corresponding right bracket is set, parameter is LSB first
     * 0x07 is right bracket, it has 4 byte parameter, where address of corresponding left bracket is set, parameter is LSB first
     */
-    protected const int AddressLenght = 4;
-    protected const int MemoryShiftParameterLenght = 4;
-    protected const int ArithmeticParameterLenght = 1;
+    private const int AddressLenght = 4;
+    private const int MemoryShiftParameterLenght = 4;
+    private const int ArithmeticParameterLenght = 1;
 
     public FirstLevelCodeRunner(byte[] code) : base(code)
     {
