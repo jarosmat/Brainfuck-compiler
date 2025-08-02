@@ -1,4 +1,4 @@
-namespace BytecodeInterpreter;
+namespace BytecodeGenerator;
 
 public enum Fingerprints
 {

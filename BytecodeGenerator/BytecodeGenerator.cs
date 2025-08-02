@@ -1,28 +1,25 @@
-using BytecodeInterpreter;
 using Utilities;
 
 namespace BytecodeGenerator;
 
 public abstract class BytecodeGenerator<TCommandType>
 {
-    protected class Bracket(uint address)
+    protected class Bracket(int address)
     {
-        public uint Address { get; private set; } = address;
+        public int Address { get; private set; } = address;
     }
 
-    protected readonly List<Bracket> _bracketStack;
+    protected readonly List<Bracket> BracketStack;
     protected const int AddressLenght = 4;
-    protected readonly TextReader _streamReader;
-    private readonly Fingerprints fingerprint;
+    protected readonly TextReader StreamReader;
     protected readonly List<byte> Bytes;
 
     protected BytecodeGenerator(TextReader streamReader, Fingerprints fingerprint)
     {
-        _streamReader = streamReader;
-        _bracketStack = new List<Bracket>();
-        this.fingerprint = fingerprint;
+        StreamReader = streamReader;
+        BracketStack = new List<Bracket>();
         Bytes = new List<byte>();
-        ByteNumbersHandler.AddBytesToList(Bytes, (uint)this.fingerprint);
+        ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }
 
     protected BytecodeGenerator(string fileName, Fingerprints fingerprint)
@@ -32,11 +29,10 @@ public abstract class BytecodeGenerator<TCommandType>
             throw new FileNotFoundException();
         }
 
-        this.fingerprint = fingerprint;
         Bytes = new List<byte>();
-        _streamReader = new StreamReader(fileName);
-        _bracketStack = new List<Bracket>();
-        ByteNumbersHandler.AddBytesToList(Bytes, (uint)this.fingerprint);
+        StreamReader = new StreamReader(fileName);
+        BracketStack = new List<Bracket>();
+        ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }
 
     public abstract byte[] CreateByteCode();

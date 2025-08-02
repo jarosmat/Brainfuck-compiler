@@ -1,5 +1,4 @@
 using System.Data;
-using BytecodeInterpreter;
 using Utilities;
 
 namespace BytecodeGenerator;
@@ -14,7 +13,7 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
 
     public FirstLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
 
-    private void AddOperation(List<byte> bytes, int charToAdd, uint count)
+    private void AddOperation(List<byte> bytes, int charToAdd, int count)
     {
         switch (charToAdd)
         {
@@ -42,22 +41,22 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
                 break;
             case '[':
                 bytes.Add((byte)SimpleInstructions.LeftBracket);
-                Bracket bracket = new Bracket((uint)bytes.Count);
-                _bracketStack.Add(bracket);
+                Bracket bracket = new Bracket(bytes.Count);
+                BracketStack.Add(bracket);
                 ByteNumbersHandler.AddBytesToList(bytes, 0);
                 break;
             case ']':
-                if (_bracketStack.Count == 0)
+                if (BracketStack.Count == 0)
                 {
                     throw new SyntaxErrorException("Invalid parenthesis");
                 }
                 bytes.Add((byte)SimpleInstructions.RightBracket);
                     
-                int lastItem = _bracketStack.Count - 1;
-                Bracket bracketPopped = _bracketStack[lastItem];
-                _bracketStack.RemoveAt(lastItem);
+                int lastItem = BracketStack.Count - 1;
+                Bracket bracketPopped = BracketStack[lastItem];
+                BracketStack.RemoveAt(lastItem);
                     
-                ByteNumbersHandler.SetBytesInList(bytes, (int)bracketPopped.Address, AddressLenght, (uint)bytes.Count + AddressLenght);
+                ByteNumbersHandler.SetBytesInList(bytes, bracketPopped.Address, AddressLenght, bytes.Count + AddressLenght);
                 ByteNumbersHandler.AddBytesToList(bytes ,bracketPopped.Address + AddressLenght);
                 
                 break;
@@ -66,9 +65,9 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
 
     public override byte[] CreateByteCode()
     {
-        int currChar = _streamReader.Read();
+        int currChar = StreamReader.Read();
         int lastChar = 0;
-        uint charCount = 1;
+        int charCount = 1;
         while (currChar != -1)
         {
             if (currChar != lastChar)
@@ -86,12 +85,12 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
                 charCount++;
             }
             
-            currChar = _streamReader.Read();
+            currChar = StreamReader.Read();
         }
         
         AddOperation(Bytes, lastChar, charCount);
         
-        if (_bracketStack.Count != 0)
+        if (BracketStack.Count != 0)
         {
             throw new SyntaxErrorException("Invalid parenthesis");
         }

@@ -4,8 +4,8 @@ namespace BytecodeInterpreter;
 
 public class SecondLevelCodeRunner : FirstLevelCodeRunner
 {
-    private int MoveDataMemoryShift = 4;
-    private int MoveDataCoefficientLenght = 1;
+    private readonly int _moveDataMemoryShift = 4;
+    private readonly int _moveDataCoefficientLenght = 1;
     public SecondLevelCodeRunner(byte[] code) : base(code)
     {
     }
@@ -34,9 +34,9 @@ public class SecondLevelCodeRunner : FirstLevelCodeRunner
         // Going to write some tests and then implement it, ok after instruction first byte is multiplication,
         // and 4 byte for relative position of node since I cant calculate exact address at compile time, these 4 bytes will be signed int
         int coefficient = Code[InstructionPointer];
-        InstructionPointer += (uint)MoveDataCoefficientLenght;
-        int shift = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, MoveDataMemoryShift);
-        InstructionPointer += (uint)MoveDataMemoryShift;
+        InstructionPointer += _moveDataCoefficientLenght;
+        int shift = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, _moveDataMemoryShift);
+        InstructionPointer += _moveDataMemoryShift;
 
         Memory[DataPointer + shift] += (byte)(Memory[DataPointer] * coefficient);
         Memory[DataPointer] = 0;

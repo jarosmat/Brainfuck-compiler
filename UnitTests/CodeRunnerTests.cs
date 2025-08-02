@@ -9,7 +9,7 @@ public class CodeRunnerTests
     [Fact]
     public void SimpleAddition()
     {
-        using IOHandler consoleOut = new IOHandler("");
+        using IoHandler consoleOut = new IoHandler("");
         SimpleCodeRunner simpleCodeRunner = new SimpleCodeRunner([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x04]);
         Interpreter interpreter = new Interpreter();
         interpreter.Run(simpleCodeRunner);
@@ -24,7 +24,7 @@ public class CodeRunnerTests
         string stringToPass = new string(charToPass);
         string output;
         // Console.WriteLine(stringToPass);
-        using (IOHandler consoleOut = new IOHandler(stringToPass))
+        using (IoHandler consoleOut = new IoHandler(stringToPass))
         {
             SimpleCodeRunner simpleCodeRunner = new SimpleCodeRunner([
                 0x05, 0x06, 0x0F, 0x00, 0x00, 0x00, 0x03, 0x00, 0x02, 0x01, 0x07, 0x01, 0x00, 0x00, 0x00, 0x03, 0x04
@@ -41,7 +41,7 @@ public class CodeRunnerTests
     [Fact]
     public void SimpleAdditionUsingParameter()
     {
-        using IOHandler consoleOut = new IOHandler("");
+        using IoHandler consoleOut = new IoHandler("");
         FirstLevelCodeRunner firstLevelCodeRunner = new FirstLevelCodeRunner([0x00, 0x41, 0x04]);
         Interpreter interpreter = new Interpreter();
         interpreter.Run(firstLevelCodeRunner);
@@ -52,7 +52,7 @@ public class CodeRunnerTests
     [Fact]
     public void SimpleAdditionAndSubtractionUsingParameter()
     {
-        using IOHandler consoleOut = new IOHandler("");
+        using IoHandler consoleOut = new IoHandler("");
         FirstLevelCodeRunner firstLevelCodeRunner = new FirstLevelCodeRunner([0x00, 0x7A, 0x04, 0x01, 0x39, 0x04]);
         Interpreter interpreter = new Interpreter();
         interpreter.Run(firstLevelCodeRunner);
@@ -66,7 +66,7 @@ public class CodeRunnerTests
         int randomByte  = _random.Next(48, 125);
         char[] charToPass = _utf8.GetChars([(byte)randomByte]);
         string stringToPass = new string(charToPass);
-        using IOHandler consoleOut = new IOHandler(stringToPass);
+        using IoHandler consoleOut = new IoHandler(stringToPass);
         FirstLevelCodeRunner firstLevelCodeRunner = new FirstLevelCodeRunner([0x05, 0x06, 0x0F, 0x00, 0x00, 0x00, 0x03, 0x05, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x05, 0x00, 0x00, 0x00, 0x01, 0x01, 0x07, 0x01, 0x00, 0x00, 0x00, 0x03, 0x05, 0x00, 0x00, 0x00, 0x04]);
         Interpreter interpreter = new Interpreter();
         interpreter.Run(firstLevelCodeRunner);
@@ -80,15 +80,13 @@ public class CodeRunnerTests
         int randomByte  = _random.Next(48, 125);
         char[] charToPass = _utf8.GetChars([(byte)randomByte]);
         string stringToPass = new string(charToPass);
-        using (IOHandler consoleOut = new IOHandler(stringToPass))
-        {
-            SecondLevelCodeRunner secondLevelCodeRunner =
-                new SecondLevelCodeRunner([0x05, 0x08, 0x00, 0x41, 0x04]);
-            Interpreter interpreter = new Interpreter();
-            interpreter.Run(secondLevelCodeRunner);
-            string output = consoleOut.GetOutput();
-            Assert.Equal("A", output);
-        }
+        using IoHandler consoleOut = new IoHandler(stringToPass);
+        SecondLevelCodeRunner secondLevelCodeRunner =
+            new SecondLevelCodeRunner([0x05, 0x08, 0x00, 0x41, 0x04]);
+        Interpreter interpreter = new Interpreter();
+        interpreter.Run(secondLevelCodeRunner);
+        string output = consoleOut.GetOutput();
+        Assert.Equal("A", output);
     }
 
     [Fact]
@@ -97,29 +95,25 @@ public class CodeRunnerTests
         int randomByte  = _random.Next(48, 125);
         char[] charToPass = _utf8.GetChars([(byte)randomByte]);
         string stringToPass = new string(charToPass);
-        using (IOHandler consoleOut = new IOHandler(stringToPass))
-        {
-            SecondLevelCodeRunner secondLevelCodeRunner =
-                new SecondLevelCodeRunner([0x05, 0x09, 0x01, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
-            Interpreter interpreter = new Interpreter();
-            interpreter.Run(secondLevelCodeRunner);
-            string output = consoleOut.GetOutput();
-            Assert.Equal(stringToPass, output);
-        }
+        using IoHandler consoleOut = new IoHandler(stringToPass);
+        SecondLevelCodeRunner secondLevelCodeRunner =
+            new SecondLevelCodeRunner([0x05, 0x09, 0x01, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
+        Interpreter interpreter = new Interpreter();
+        interpreter.Run(secondLevelCodeRunner);
+        string output = consoleOut.GetOutput();
+        Assert.Equal(stringToPass, output);
     }
 
     [Fact]
     public void MoveDataToEmptyCellMultiply()
     {
-        using (IOHandler consoleOut = new IOHandler("A"))
-        {
-            SecondLevelCodeRunner secondLevelCodeRunner =
-                new SecondLevelCodeRunner([0x00, 0x0D, 0x09, 0x05, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
-            Interpreter interpreter = new Interpreter();
-            interpreter.Run(secondLevelCodeRunner);
-            string output = consoleOut.GetOutput();
-            Assert.Equal("A", output);
-        }
+        using IoHandler consoleOut = new IoHandler("A");
+        SecondLevelCodeRunner secondLevelCodeRunner =
+            new SecondLevelCodeRunner([0x00, 0x0D, 0x09, 0x05, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
+        Interpreter interpreter = new Interpreter();
+        interpreter.Run(secondLevelCodeRunner);
+        string output = consoleOut.GetOutput();
+        Assert.Equal("A", output);
     }
 
     [Fact]
@@ -130,15 +124,13 @@ public class CodeRunnerTests
         char[] charToPass = _utf8.GetChars([(byte)randomByte]);
         string stringToPass = new string(charToPass);
         string stringToGet = new string(charToGet);
-        using (IOHandler consoleOut = new IOHandler(stringToPass))
-        {
-            SecondLevelCodeRunner secondLevelCodeRunner =
-                new SecondLevelCodeRunner([0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01, 0x05, 0x09, 0x01, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
-            Interpreter interpreter = new Interpreter();
-            interpreter.Run(secondLevelCodeRunner);
-            string output = consoleOut.GetOutput();
-            Assert.Equal(stringToGet, output);
-        }
+        using IoHandler consoleOut = new IoHandler(stringToPass);
+        SecondLevelCodeRunner secondLevelCodeRunner =
+            new SecondLevelCodeRunner([0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x06, 0x00, 0x00, 0x00, 0x05, 0x09, 0x01, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
+        Interpreter interpreter = new Interpreter();
+        interpreter.Run(secondLevelCodeRunner);
+        string output = consoleOut.GetOutput();
+        Assert.Equal(stringToGet, output);
     }
 
     [Fact]
@@ -147,14 +139,12 @@ public class CodeRunnerTests
         int randomByte  = _random.Next(48, 125);
         char[] charToPass = _utf8.GetChars([(byte)randomByte]);
         string stringToPass = new string(charToPass);
-        using (IOHandler consoleOut = new IOHandler(stringToPass))
-        {
-            SecondLevelCodeRunner secondLevelCodeRunner =
-                new SecondLevelCodeRunner([0x03, 0x06, 0x00, 0x00, 0x00, 0x05, 0x09, 0x01, 0xFA, 0xFF, 0xFF, 0xFF, 0x02, 0x06, 0x00, 0x00, 0x00, 0x04]);
-            Interpreter interpreter = new Interpreter();
-            interpreter.Run(secondLevelCodeRunner);
-            string output = consoleOut.GetOutput();
-            Assert.Equal(stringToPass, output);
-        }
+        using IoHandler consoleOut = new IoHandler(stringToPass);
+        SecondLevelCodeRunner secondLevelCodeRunner =
+            new SecondLevelCodeRunner([0x03, 0x06, 0x00, 0x00, 0x00, 0x05, 0x09, 0x01, 0xFA, 0xFF, 0xFF, 0xFF, 0x02, 0x06, 0x00, 0x00, 0x00, 0x04]);
+        Interpreter interpreter = new Interpreter();
+        interpreter.Run(secondLevelCodeRunner);
+        string output = consoleOut.GetOutput();
+        Assert.Equal(stringToPass, output);
     }
 }

@@ -1,6 +1,5 @@
 using System.Data;
 using BytecodeGenerator;
-using System.Text;
 namespace UnitTests;
 
 public class FirstLevelBytecodeGeneratorTests

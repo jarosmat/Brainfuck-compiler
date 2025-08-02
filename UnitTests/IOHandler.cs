@@ -1,13 +1,13 @@
 namespace UnitTests;
 
-public class IOHandler : IDisposable
+public class IoHandler : IDisposable
 {
     private readonly StringWriter _newOutput;
     private readonly TextWriter _originalOutput;
     private readonly StringReader _newInput;
     private readonly TextReader _originalInput;
 
-    public IOHandler(string stringToRead)
+    public IoHandler(string stringToRead)
     {
         _newOutput = new StringWriter();
         _originalOutput = Console.Out;

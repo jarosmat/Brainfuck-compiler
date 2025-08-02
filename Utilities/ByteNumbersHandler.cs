@@ -2,16 +2,6 @@ namespace Utilities;
 
 public static class ByteNumbersHandler
 {
-    public static byte[] GetBytes(uint number)
-    {
-        byte[] result = BitConverter.GetBytes(number);
-        if (!BitConverter.IsLittleEndian)
-        {
-            result = result.Reverse().ToArray();
-        }
-        return result;
-    }
-
     public static byte[] GetBytes(int number)
     {
         byte[] result = BitConverter.GetBytes(number);
@@ -22,7 +12,7 @@ public static class ByteNumbersHandler
         return result;
     }
     
-    public static void SetBytesInList(List<byte> bytes, int index, int count, uint number)
+    public static void SetBytesInList(List<byte> bytes, int index, int count, int number)
     {
         byte[] bytesToChange = GetBytes(number);
         for (int i = 0; i < count; i++)
@@ -31,7 +21,7 @@ public static class ByteNumbersHandler
         }
     }
 
-    public static void AddBytesToList(List<byte> bytes, uint number)
+    public static void AddBytesToList(List<byte> bytes, int number)
     {
         foreach (byte byteToAdd in ByteNumbersHandler.GetBytes(number))
         {
@@ -39,23 +29,23 @@ public static class ByteNumbersHandler
         }
     }
     
-    public static uint GetNumber(byte[] bytes)
+    public static int GetNumber(byte[] bytes)
     {
         if (!BitConverter.IsLittleEndian)
         {
             bytes = bytes.Reverse().ToArray();
         }
 
-        uint result = BitConverter.ToUInt32(bytes);
+        int result = BitConverter.ToInt32(bytes);
         return result;
     }
-
-    public static uint GetNumber(byte[] bytes, uint index, int count)
+    
+    public static int GetNumberInt(byte[] bytes, int index, int count)
     {
         return GetNumber(GetByteSpan(bytes, index, count));
     }
-
-    public static byte[] GetByteSpan(byte[] bytes, uint index, int count)
+    
+    public static byte[] GetByteSpan(byte[] bytes, int index, int count)
     {
         byte[] result = new byte[count];
         int newIndex = (int)index;

@@ -4,21 +4,21 @@ namespace BytecodeInterpreter;
 
 public abstract class CodeRunner
 {
-    private static readonly uint MemorySize = 30000;
+    private static readonly int MemorySize = 30000;
     protected readonly byte[] Memory = new byte[MemorySize];
-    private uint _dataPointer;
+    private int _dataPointer;
 
-    protected uint DataPointer
+    protected int DataPointer
     {
         get => _dataPointer;
         set => _dataPointer = value % MemorySize;
     }
-    public uint InstructionPointer { get; set; }
+    public int InstructionPointer { get; set; }
     public readonly byte[] Code;
     
     public delegate void RunFunc();
     public abstract RunFunc[] GetDelegates();
-    protected static readonly UTF8Encoding Utf8 = new UTF8Encoding();
+    private static readonly UTF8Encoding Utf8 = new UTF8Encoding();
 
     protected CodeRunner(string codeAddress)
     {
@@ -34,9 +34,9 @@ public abstract class CodeRunner
         Code = code;
     }
     
-    public uint GetCodeLen()
+    public int GetCodeLen()
     {
-        return (uint)Code.Length;
+        return Code.Length;
     }
     
     protected void PrintValue()
