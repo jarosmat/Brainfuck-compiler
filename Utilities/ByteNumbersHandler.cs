@@ -12,6 +12,16 @@ public static class ByteNumbersHandler
         return result;
     }
 
+    public static byte[] GetBytes(int number)
+    {
+        byte[] result = BitConverter.GetBytes(number);
+        if (!BitConverter.IsLittleEndian)
+        {
+            result = result.Reverse().ToArray();
+        }
+        return result;
+    }
+    
     public static void SetBytesInList(List<byte> bytes, int index, int count, uint number)
     {
         byte[] bytesToChange = GetBytes(number);
