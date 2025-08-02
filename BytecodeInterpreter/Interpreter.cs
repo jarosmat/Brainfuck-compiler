@@ -2,6 +2,7 @@ namespace BytecodeInterpreter;
 
 public class Interpreter
 {
+    //TODO: Need to add skipping fingerprint
     public void Run(CodeRunner runner)
     {
         uint codeLen = runner.GetCodeLen();
