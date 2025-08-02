@@ -73,4 +73,88 @@ public class CodeRunnerTests
         string output = consoleOut.GetOutput();
         Assert.Equal(stringToPass, output);
     }
+
+    [Fact]
+    public void SetMemoryZero()
+    {
+        int randomByte  = _random.Next(48, 125);
+        char[] charToPass = _utf8.GetChars([(byte)randomByte]);
+        string stringToPass = new string(charToPass);
+        using (IOHandler consoleOut = new IOHandler(stringToPass))
+        {
+            SecondLevelCodeRunner secondLevelCodeRunner =
+                new SecondLevelCodeRunner([0x05, 0x08, 0x00, 0x41, 0x04]);
+            Interpreter interpreter = new Interpreter();
+            interpreter.Run(secondLevelCodeRunner);
+            string output = consoleOut.GetOutput();
+            Assert.Equal("A", output);
+        }
+    }
+
+    [Fact]
+    public void MoveDataToEmptyCell()
+    {
+        int randomByte  = _random.Next(48, 125);
+        char[] charToPass = _utf8.GetChars([(byte)randomByte]);
+        string stringToPass = new string(charToPass);
+        using (IOHandler consoleOut = new IOHandler(stringToPass))
+        {
+            SecondLevelCodeRunner secondLevelCodeRunner =
+                new SecondLevelCodeRunner([0x05, 0x09, 0x01, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
+            Interpreter interpreter = new Interpreter();
+            interpreter.Run(secondLevelCodeRunner);
+            string output = consoleOut.GetOutput();
+            Assert.Equal(stringToPass, output);
+        }
+    }
+
+    [Fact]
+    public void MoveDataToEmptyCellMultiply()
+    {
+        using (IOHandler consoleOut = new IOHandler("A"))
+        {
+            SecondLevelCodeRunner secondLevelCodeRunner =
+                new SecondLevelCodeRunner([0x00, 0x0D, 0x09, 0x05, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
+            Interpreter interpreter = new Interpreter();
+            interpreter.Run(secondLevelCodeRunner);
+            string output = consoleOut.GetOutput();
+            Assert.Equal("A", output);
+        }
+    }
+
+    [Fact]
+    public void MoveDataToNonEmptyCell()
+    {
+        int randomByte  = _random.Next(48, 124);
+        char[] charToGet = _utf8.GetChars([(byte)(randomByte + 1)]);
+        char[] charToPass = _utf8.GetChars([(byte)randomByte]);
+        string stringToPass = new string(charToPass);
+        string stringToGet = new string(charToGet);
+        using (IOHandler consoleOut = new IOHandler(stringToPass))
+        {
+            SecondLevelCodeRunner secondLevelCodeRunner =
+                new SecondLevelCodeRunner([0x03, 0x06, 0x00, 0x00, 0x00, 0x00, 0x01, 0x05, 0x09, 0x01, 0x06, 0x00, 0x00, 0x00, 0x03, 0x06, 0x00, 0x00, 0x00, 0x04]);
+            Interpreter interpreter = new Interpreter();
+            interpreter.Run(secondLevelCodeRunner);
+            string output = consoleOut.GetOutput();
+            Assert.Equal(stringToGet, output);
+        }
+    }
+
+    [Fact]
+    public void MoveDataToCellOnTheLeft()
+    {
+        int randomByte  = _random.Next(48, 125);
+        char[] charToPass = _utf8.GetChars([(byte)randomByte]);
+        string stringToPass = new string(charToPass);
+        using (IOHandler consoleOut = new IOHandler(stringToPass))
+        {
+            SecondLevelCodeRunner secondLevelCodeRunner =
+                new SecondLevelCodeRunner([0x03, 0x06, 0x00, 0x00, 0x00, 0x05, 0x09, 0x01, 0xFA, 0xFF, 0xFF, 0xFF, 0x02, 0x06, 0x00, 0x00, 0x00, 0x04]);
+            Interpreter interpreter = new Interpreter();
+            interpreter.Run(secondLevelCodeRunner);
+            string output = consoleOut.GetOutput();
+            Assert.Equal(stringToPass, output);
+        }
+    }
 }
