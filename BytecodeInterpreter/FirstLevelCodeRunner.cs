@@ -14,9 +14,9 @@ public class FirstLevelCodeRunner : CodeRunner
     * 0x06 is left bracket, it has 4 byte parameter, where address of corresponding right bracket is set, parameter is LSB first
     * 0x07 is right bracket, it has 4 byte parameter, where address of corresponding left bracket is set, parameter is LSB first
     */
-    private const int AddressLenght = 4;
-    private const int MemoryShiftParameterLenght = 4;
-    private const int ArithmeticParameterLenght = 1;
+    protected const int AddressLenght = 4;
+    protected const int MemoryShiftParameterLenght = 4;
+    protected const int ArithmeticParameterLenght = 1;
 
     public FirstLevelCodeRunner(byte[] code) : base(code)
     {
@@ -34,31 +34,31 @@ public class FirstLevelCodeRunner : CodeRunner
         ];
     }
 
-    private void Increment()
+    protected void Increment()
     {
         Memory[DataPointer] += Code[InstructionPointer];
         InstructionPointer += ArithmeticParameterLenght;
     }
 
-    private void Decrement()
+    protected void Decrement()
     {
         Memory[DataPointer] -= Code[InstructionPointer];
         InstructionPointer += ArithmeticParameterLenght;
     }
 
-    private void ShiftAddressRight()
+    protected void ShiftAddressRight()
     {
         DataPointer += ByteNumbersHandler.GetNumber(Code, InstructionPointer, MemoryShiftParameterLenght);
         InstructionPointer += MemoryShiftParameterLenght;
     }
 
-    private void ShiftAddressLeft()
+    protected void ShiftAddressLeft()
     {
         DataPointer -= ByteNumbersHandler.GetNumber(Code, InstructionPointer, MemoryShiftParameterLenght);
         InstructionPointer += MemoryShiftParameterLenght;
     }
 
-    private void LoopStart()
+    protected void LoopStart()
     {
         if (Memory[DataPointer] != 0)
         {
@@ -70,7 +70,7 @@ public class FirstLevelCodeRunner : CodeRunner
         }
     }
 
-    private void IterationEnd()
+    protected void IterationEnd()
     {
         if (Memory[DataPointer] == 0)
         {
