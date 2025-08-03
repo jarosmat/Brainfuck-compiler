@@ -7,13 +7,15 @@ public abstract class CodeRunner
     private static readonly int MemorySize = 30000;
     protected readonly byte[] Memory = new byte[MemorySize];
     private int _dataPointer;
+    public const int FingerprintLenght = 4;
 
     protected int DataPointer
     {
         get => _dataPointer;
         set => _dataPointer = value % MemorySize;
     }
-    public int InstructionPointer { get; set; }
+
+    public int InstructionPointer { get; set; } = FingerprintLenght;
     public readonly byte[] Code;
     
     public delegate void RunFunc();
