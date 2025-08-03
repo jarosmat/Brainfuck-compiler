@@ -7,7 +7,7 @@ public class CodeRunnerFactory
     private static readonly CodeRunnerFactory? RunnerFactory = null;
     private CodeRunnerFactory(){}
 
-    public CodeRunnerFactory GetFactory()
+    public static CodeRunnerFactory GetFactory()
     {
         if (RunnerFactory != null)
         {
@@ -17,7 +17,7 @@ public class CodeRunnerFactory
         return new CodeRunnerFactory();
     }
 
-    public static CodeRunner GetCodeRunner(byte[] bytes)
+    public CodeRunner GetCodeRunner(byte[] bytes)
     {
         int num = ByteNumbersHandler.GetNumber(bytes, 0, CodeRunner.FingerprintLenght);
         CodeRunner result;
