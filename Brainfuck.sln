@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BytecodeInterpreter", "Byte
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{77C9A90F-44C8-430C-922F-BB1B8AB15E31}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60C2940B-C8AF-4900-8AAC-E2C180DC77EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77C9A90F-44C8-430C-922F-BB1B8AB15E31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77C9A90F-44C8-430C-922F-BB1B8AB15E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77C9A90F-44C8-430C-922F-BB1B8AB15E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77C9A90F-44C8-430C-922F-BB1B8AB15E31}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
