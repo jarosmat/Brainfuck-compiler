@@ -52,12 +52,12 @@ public class SimpleCodeRunner : CodeRunner
         }
         else
         {
-            InstructionPointer = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, AddressLenght);
+            InstructionPointer = ByteNumbersHandler.GetNumber(Code, InstructionPointer, AddressLenght);
         }
     }
 
     private void IterationEnd()
     {
-        InstructionPointer = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, AddressLenght);
+        InstructionPointer = ByteNumbersHandler.GetNumber(Code, InstructionPointer, AddressLenght);
     }
 }

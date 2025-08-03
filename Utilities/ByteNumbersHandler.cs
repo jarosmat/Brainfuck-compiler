@@ -40,7 +40,7 @@ public static class ByteNumbersHandler
         return result;
     }
     
-    public static int GetNumberInt(byte[] bytes, int index, int count)
+    public static int GetNumber(byte[] bytes, int index, int count)
     {
         return GetNumber(GetByteSpan(bytes, index, count));
     }

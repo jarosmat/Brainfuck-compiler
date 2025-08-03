@@ -35,7 +35,7 @@ public class SecondLevelCodeRunner : FirstLevelCodeRunner
         // and 4 byte for relative position of node since I cant calculate exact address at compile time, these 4 bytes will be signed int
         int coefficient = Code[InstructionPointer];
         InstructionPointer += _moveDataCoefficientLenght;
-        int shift = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, _moveDataMemoryShift);
+        int shift = ByteNumbersHandler.GetNumber(Code, InstructionPointer, _moveDataMemoryShift);
         InstructionPointer += _moveDataMemoryShift;
 
         Memory[DataPointer + shift] += (byte)(Memory[DataPointer] * coefficient);

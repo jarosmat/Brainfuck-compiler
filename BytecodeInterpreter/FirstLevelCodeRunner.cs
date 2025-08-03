@@ -48,13 +48,13 @@ public class FirstLevelCodeRunner : CodeRunner
 
     protected void ShiftAddressRight()
     {
-        DataPointer += ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, MemoryShiftParameterLenght);
+        DataPointer += ByteNumbersHandler.GetNumber(Code, InstructionPointer, MemoryShiftParameterLenght);
         InstructionPointer += MemoryShiftParameterLenght;
     }
 
     protected void ShiftAddressLeft()
     {
-        DataPointer -= ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, MemoryShiftParameterLenght);
+        DataPointer -= ByteNumbersHandler.GetNumber(Code, InstructionPointer, MemoryShiftParameterLenght);
         InstructionPointer += MemoryShiftParameterLenght;
     }
 
@@ -66,7 +66,7 @@ public class FirstLevelCodeRunner : CodeRunner
         }
         else
         {
-            InstructionPointer = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, AddressLenght);
+            InstructionPointer = ByteNumbersHandler.GetNumber(Code, InstructionPointer, AddressLenght);
         }
     }
 
@@ -78,7 +78,7 @@ public class FirstLevelCodeRunner : CodeRunner
         }
         else
         {
-            InstructionPointer = ByteNumbersHandler.GetNumberInt(Code, InstructionPointer, AddressLenght);
+            InstructionPointer = ByteNumbersHandler.GetNumber(Code, InstructionPointer, AddressLenght);
         }
     }
 }
