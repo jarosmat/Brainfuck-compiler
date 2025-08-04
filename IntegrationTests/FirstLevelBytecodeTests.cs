@@ -14,7 +14,7 @@ public class FirstLevelBytecodeTests
         using (IoHandler handler = new IoHandler("1234\n"))
         {
             CodeRunnerFactory factory = CodeRunnerFactory.GetFactory();
-            SimpleByteCodeGenerator byteCodeGenerator = new SimpleByteCodeGenerator(filename);
+            FirstLevelBytecodeGenerator byteCodeGenerator = new FirstLevelBytecodeGenerator(filename);
             byte[] bytes = byteCodeGenerator.CreateByteCode();
             CodeRunner codeRunner = factory.GetCodeRunner(bytes);
             Interpreter interpreter = new Interpreter();
