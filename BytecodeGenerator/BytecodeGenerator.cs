@@ -26,7 +26,7 @@ public abstract class BytecodeGenerator<TCommandType>
     {
         if (!File.Exists(fileName))
         {
-            throw new FileNotFoundException();
+            throw new FileNotFoundException($"could not find file {fileName}");
         }
 
         Bytes = new List<byte>();
