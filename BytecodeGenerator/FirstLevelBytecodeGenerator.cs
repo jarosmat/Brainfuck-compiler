@@ -13,51 +13,51 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
 
     public FirstLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
 
-    private void AddOperation(List<byte> bytes, int charToAdd, int count)
+    private void AddOperation(int charToAdd, int count)
     {
         switch (charToAdd)
         {
             case '+':
-                bytes.Add((byte)SimpleInstructions.Increment);
-                bytes.Add((byte)count);
+                Bytes.Add((byte)SimpleInstructions.Increment);
+                Bytes.Add((byte)count);
                 break;
             case '-':
-                bytes.Add((byte)SimpleInstructions.Decrement);
-                bytes.Add((byte)count);
+                Bytes.Add((byte)SimpleInstructions.Decrement);
+                Bytes.Add((byte)count);
                 break;
             case '<':
-                bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
-                ByteNumbersHandler.AddBytesToList(bytes, count);
+                Bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
+                ByteNumbersHandler.AddBytesToList(Bytes, count);
                 break;
             case '>':
-                bytes.Add((byte)SimpleInstructions.ShiftDataRight);
-                ByteNumbersHandler.AddBytesToList(bytes, count);
+                Bytes.Add((byte)SimpleInstructions.ShiftDataRight);
+                ByteNumbersHandler.AddBytesToList(Bytes, count);
                 break;
             case '.':
-                bytes.Add((byte)SimpleInstructions.PrintValue);
+                Bytes.Add((byte)SimpleInstructions.PrintValue);
                 break;
             case ',':
-                bytes.Add((byte)SimpleInstructions.ReadValue);
+                Bytes.Add((byte)SimpleInstructions.ReadValue);
                 break;
             case '[':
-                bytes.Add((byte)SimpleInstructions.LeftBracket);
-                Bracket bracket = new Bracket(bytes.Count);
+                Bytes.Add((byte)SimpleInstructions.LeftBracket);
+                Bracket bracket = new Bracket(Bytes.Count);
                 BracketStack.Add(bracket);
-                ByteNumbersHandler.AddBytesToList(bytes, 0);
+                ByteNumbersHandler.AddBytesToList(Bytes, 0);
                 break;
             case ']':
                 if (BracketStack.Count == 0)
                 {
                     throw new SyntaxErrorException("Invalid parenthesis");
                 }
-                bytes.Add((byte)SimpleInstructions.RightBracket);
+                Bytes.Add((byte)SimpleInstructions.RightBracket);
                     
                 int lastItem = BracketStack.Count - 1;
                 Bracket bracketPopped = BracketStack[lastItem];
                 BracketStack.RemoveAt(lastItem);
                     
-                ByteNumbersHandler.SetBytesInList(bytes, bracketPopped.Address, AddressLenght, bytes.Count + AddressLenght);
-                ByteNumbersHandler.AddBytesToList(bytes ,bracketPopped.Address + AddressLenght);
+                ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
+                ByteNumbersHandler.AddBytesToList(Bytes ,bracketPopped.Address + AddressLenght);
                 
                 break;
         }
@@ -72,13 +72,13 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
         {
             if (currChar != lastChar)
             {
-                AddOperation(Bytes, lastChar, charCount);
+                AddOperation(lastChar, charCount);
                 lastChar = currChar;
                 charCount = 1;
             }
             else if (lastChar == '.' || lastChar == ',' || lastChar == '[' || lastChar == ']')
             {
-                AddOperation(Bytes, lastChar, charCount);
+                AddOperation( lastChar, charCount);
             }
             else
             {
@@ -88,7 +88,7 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
             currChar = StreamReader.Read();
         }
         
-        AddOperation(Bytes, lastChar, charCount);
+        AddOperation(lastChar, charCount);
         
         if (BracketStack.Count != 0)
         {
