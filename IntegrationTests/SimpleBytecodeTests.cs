@@ -7,15 +7,16 @@ namespace IntegrationTests;
 [Collection("IO Collection")]
 public class SimpleBytecodeTests
 {
-    string filename = "/home/mjaros/RiderProjects/Brainfuck/BrainfuckTestPrograms/factor.bf";
+    string filename = "../../../../BrainfuckTestPrograms/factor.bf";
     [Fact]
     public void FactorNumberUsingSimpleBytecode()
     {
         using (IoHandler handler = new IoHandler("1234\n"))
         {
+            CodeRunnerFactory factory = CodeRunnerFactory.GetFactory();
             SimpleByteCodeGenerator byteCodeGenerator = new SimpleByteCodeGenerator(filename);
             byte[] bytes = byteCodeGenerator.CreateByteCode();
-            SimpleCodeRunner codeRunner = new SimpleCodeRunner(bytes);
+            CodeRunner codeRunner = factory.GetCodeRunner(bytes);
             Interpreter interpreter = new Interpreter();
             interpreter.Run(codeRunner);
             string output = handler.GetOutput();
