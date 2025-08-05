@@ -6,8 +6,8 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
 {
     private class Operation(ExtendedInstructions opCode, byte[]? pars)
     {
-        protected ExtendedInstructions OpCode { get;  } = opCode;
-        protected byte[]? Parameters { get; } = pars;
+        public ExtendedInstructions OpCode { get;  } = opCode;
+        public byte[]? Parameters { get; } = pars;
 
         public virtual void AddBytes(List<byte> bytes)
         {
@@ -32,15 +32,37 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
         public override void AddBytes(List<byte> bytes)
         {
             bytes.Add((byte)OpCode);
-            if (Parameters != null)
-                foreach (var byt in Parameters)
+            Operation lastOp = NotRelatedFunctions.PopFromList(Operations);
+            if (lastOp.OpCode != ExtendedInstructions.RightBracket)
+            {
+                throw new Exception("Loop was not closed");
+            }
+
+            if (lastOp.Parameters != null)
+                foreach (var byt in lastOp.Parameters)
                 {
                     bytes.Add(byt);
                 }
+            else
+            {
+                throw new Exception("Loop end does not contain address");
+            }
 
             foreach (var operation in Operations)
             {
                 operation.AddBytes(bytes);
+            }
+            
+            bytes.Add((byte)lastOp.OpCode);
+            var parameters = Parameters;
+            if (parameters != null)
+                foreach (var byt in parameters)
+                {
+                    bytes.Add(byt);
+                }
+            else
+            {
+                throw new Exception("Loop start does not contain address");
             }
         }
     }
