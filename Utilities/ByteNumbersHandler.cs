@@ -2,9 +2,9 @@ namespace Utilities;
 
 public static class ByteNumbersHandler
 {
-    public static byte[] GetBytes(int number)
+    public static byte[]? GetBytes(int number)
     {
-        byte[] result = BitConverter.GetBytes(number);
+        byte[]? result = BitConverter.GetBytes(number);
         if (!BitConverter.IsLittleEndian)
         {
             result = result.Reverse().ToArray();
@@ -14,7 +14,7 @@ public static class ByteNumbersHandler
     
     public static void SetBytesInList(List<byte> bytes, int index, int count, int number)
     {
-        byte[] bytesToChange = GetBytes(number);
+        byte[]? bytesToChange = GetBytes(number);
         for (int i = 0; i < count; i++)
         {
             bytes[index + i] = bytesToChange[i];
@@ -29,7 +29,7 @@ public static class ByteNumbersHandler
         }
     }
     
-    public static int GetNumber(byte[] bytes)
+    public static int GetNumber(byte[]? bytes)
     {
         if (!BitConverter.IsLittleEndian)
         {
@@ -45,9 +45,9 @@ public static class ByteNumbersHandler
         return GetNumber(GetByteSpan(bytes, index, count));
     }
     
-    public static byte[] GetByteSpan(byte[] bytes, int index, int count)
+    public static byte[]? GetByteSpan(byte[] bytes, int index, int count)
     {
-        byte[] result = new byte[count];
+        byte[]? result = new byte[count];
         int newIndex = (int)index;
         for (int i = 0; i < count; i++)
         {
