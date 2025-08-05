@@ -52,9 +52,7 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
                 }
                 Bytes.Add((byte)SimpleInstructions.RightBracket);
                     
-                int lastItem = BracketStack.Count - 1;
-                Bracket bracketPopped = BracketStack[lastItem];
-                BracketStack.RemoveAt(lastItem);
+                Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
                     
                 ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
                 ByteNumbersHandler.AddBytesToList(Bytes ,bracketPopped.Address + AddressLenght);
