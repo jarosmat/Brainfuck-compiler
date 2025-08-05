@@ -6,8 +6,8 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
 {
     private class Operation(ExtendedInstructions opCode, byte[]? pars)
     {
-        public ExtendedInstructions OpCode { get;  } = opCode;
-        public byte[]? Parameters { get; } = pars;
+        protected ExtendedInstructions OpCode { get;  } = opCode;
+        public byte[]? Parameters { get; set; } = pars;
 
         public virtual void AddBytes(List<byte> bytes)
         {
@@ -24,45 +24,28 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
     {
         protected readonly List<Operation> Operations = new List<Operation>();
 
-        public void AddOperation(ExtendedInstructions opCode, byte[]? pars)
+        public void AddOperation(Operation operation)
         {
-            Operations.Add(new Operation(opCode, pars));
+            Operations.Add(operation);
         }
         
         public override void AddBytes(List<byte> bytes)
         {
             bytes.Add((byte)OpCode);
-            Operation lastOp = NotRelatedFunctions.PopFromList(Operations);
-            if (lastOp.OpCode != ExtendedInstructions.RightBracket)
+            if (Parameters != null)
             {
-                throw new Exception("Loop was not closed");
-            }
-
-            if (lastOp.Parameters != null)
-                foreach (var byt in lastOp.Parameters)
+                foreach (var byt in Parameters)
                 {
                     bytes.Add(byt);
                 }
-            else
-            {
-                throw new Exception("Loop end does not contain address");
             }
-
-            foreach (var operation in Operations)
-            {
-                operation.AddBytes(bytes);
-            }
-            
-            bytes.Add((byte)lastOp.OpCode);
-            var parameters = Parameters;
-            if (parameters != null)
-                foreach (var byt in parameters)
-                {
-                    bytes.Add(byt);
-                }
             else
             {
                 throw new Exception("Loop start does not contain address");
+            }
+            foreach (var operation in Operations)
+            {
+                operation.AddBytes(bytes);
             }
         }
     }
@@ -79,20 +62,27 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
 
         public void AddNewOperation(ExtendedInstructions opCode, byte[]? pars)
         {
-            if (OpCode == ExtendedInstructions.LeftBracket)
+            if (opCode == ExtendedInstructions.LeftBracket)
             {
+                LoopStart newScope = new LoopStart(pars);
+                _currentScope.AddOperation(newScope);
                 _scopeStack.Add(_currentScope);
-                _currentScope = new LoopStart(pars);
+                _currentScope = newScope;
             }
-            else if (OpCode == ExtendedInstructions.RightBracket)
+            else if (opCode == ExtendedInstructions.RightBracket)
             {
-                _currentScope.AddOperation(opCode, pars);
+                _currentScope.AddOperation(new Operation(opCode, pars));
                 _currentScope = NotRelatedFunctions.PopFromList(_scopeStack);
             }
             else
             {
-                _currentScope.AddOperation(opCode, pars);
+                _currentScope.AddOperation(new Operation(opCode, pars));
             }
+        }
+
+        public void SetLoopStartParams(byte[] pars)
+        {
+            _currentScope.Parameters = pars;
         }
 
         public override void AddBytes(List<byte> bytes)
@@ -104,9 +94,11 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
         }
     }
 
-    private List<Operation> SyntaxTree = new List<Operation>();
+    private readonly Program _syntaxTree = new Program();
     
     private const Fingerprints Fingerprint = Fingerprints.SecondLevelByteCode;
+
+    private int _programLenght = 4;
     
     public SecondLevelBytecodeGenerator(string fileName) : base(fileName, Fingerprint) { }
 
@@ -117,46 +109,48 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
         switch (charToAdd)
         {
             case '+':
-                Bytes.Add((byte)SimpleInstructions.Increment);
-                Bytes.Add((byte)count);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.Increment, [(byte)count]);
+                _programLenght += 2;
                 break;
             case '-':
-                Bytes.Add((byte)SimpleInstructions.Decrement);
-                Bytes.Add((byte)count);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.Decrement, [(byte)count]);
+                _programLenght += 2;
                 break;
             case '<':
-                Bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
-                ByteNumbersHandler.AddBytesToList(Bytes, count);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.ShiftDataLeft, ByteNumbersHandler.GetBytes(count));
+                _programLenght += 5;
                 break;
             case '>':
-                Bytes.Add((byte)SimpleInstructions.ShiftDataRight);
-                ByteNumbersHandler.AddBytesToList(Bytes, count);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.ShiftDataRight, ByteNumbersHandler.GetBytes(count));
+                _programLenght += 5;
                 break;
             case '.':
-                Bytes.Add((byte)SimpleInstructions.PrintValue);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.PrintValue, null);
+                _programLenght++;
                 break;
             case ',':
-                Bytes.Add((byte)SimpleInstructions.ReadValue);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.ReadValue, null);
+                _programLenght++;
                 break;
             case '[':
-                Bytes.Add((byte)SimpleInstructions.LeftBracket);
-                Bracket bracket = new Bracket(Bytes.Count);
+                _programLenght += 5; 
+                Bracket bracket = new Bracket(_programLenght);
                 BracketStack.Add(bracket);
-                ByteNumbersHandler.AddBytesToList(Bytes, 0);
+                _syntaxTree.AddNewOperation(ExtendedInstructions.LeftBracket, null);
                 break;
             case ']':
                 if (BracketStack.Count == 0)
                 {
                     throw new SyntaxErrorException("Invalid parenthesis");
                 }
-                Bytes.Add((byte)SimpleInstructions.RightBracket);
+
+                _programLenght += 5;
+                
+                Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
                     
-                int lastItem = BracketStack.Count - 1;
-                Bracket bracketPopped = BracketStack[lastItem];
-                BracketStack.RemoveAt(lastItem);
-                    
-                ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
-                ByteNumbersHandler.AddBytesToList(Bytes ,bracketPopped.Address + AddressLenght);
+                _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
+                
+                _syntaxTree.AddNewOperation(ExtendedInstructions.RightBracket, ByteNumbersHandler.GetBytes(bracketPopped.Address));
                 
                 break;
         }
@@ -193,6 +187,9 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
         {
             throw new SyntaxErrorException("Invalid parenthesis");
         }
+        
+        _syntaxTree.AddBytes(Bytes);
+        
         return Bytes.ToArray();
     }
 }
