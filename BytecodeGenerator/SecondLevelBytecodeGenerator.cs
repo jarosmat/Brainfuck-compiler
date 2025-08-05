@@ -6,7 +6,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
 {
     private class Operation(ExtendedInstructions opCode, byte[]? pars)
     {
-        protected ExtendedInstructions OpCode { get;  } = opCode;
+        public ExtendedInstructions OpCode { get;  } = opCode;
         public byte[]? Parameters { get; set; } = pars;
 
         public virtual void AddBytes(List<byte> bytes)
@@ -48,6 +48,12 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
                 operation.AddBytes(bytes);
             }
         }
+        
+        public bool IsSetMemoryZero()
+        {
+            bool result = Operations is [{ OpCode: ExtendedInstructions.Increment or ExtendedInstructions.Decrement }];
+            return result;
+        }
     }
     
     private class Program : LoopStart
@@ -64,15 +70,15 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
         {
             if (opCode == ExtendedInstructions.LeftBracket)
             {
-                LoopStart newScope = new LoopStart(pars);
-                _currentScope.AddOperation(newScope);
                 _scopeStack.Add(_currentScope);
-                _currentScope = newScope;
+                _currentScope = new LoopStart(pars);
             }
             else if (opCode == ExtendedInstructions.RightBracket)
             {
                 _currentScope.AddOperation(new Operation(opCode, pars));
-                _currentScope = NotRelatedFunctions.PopFromList(_scopeStack);
+                LoopStart newScope = NotRelatedFunctions.PopFromList(_scopeStack);
+                newScope.AddOperation(_currentScope);
+                _currentScope = newScope;
             }
             else
             {
@@ -80,6 +86,17 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
             }
         }
 
+        public LoopStart GetCurrentScope()
+        {
+            return _currentScope;
+        }
+
+        public void SwapCurrentScope(ExtendedInstructions newInstructionOpCode, byte[]? pars)
+        {
+            _currentScope = NotRelatedFunctions.PopFromList(_scopeStack);
+            _currentScope.AddOperation(new Operation(newInstructionOpCode, pars));
+        }
+        
         public void SetLoopStartParams(byte[] pars)
         {
             _currentScope.Parameters = pars;
@@ -100,6 +117,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
 
     private int _programLenght = 4;
     
+    private static readonly int[] InstructionLengths = [2, 2, 5, 5, 1, 1, 5, 5, 1, 6];
     public SecondLevelBytecodeGenerator(string fileName) : base(fileName, Fingerprint) { }
 
     public SecondLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
@@ -110,30 +128,30 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
         {
             case '+':
                 _syntaxTree.AddNewOperation(ExtendedInstructions.Increment, [(byte)count]);
-                _programLenght += 2;
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.Increment];
                 break;
             case '-':
                 _syntaxTree.AddNewOperation(ExtendedInstructions.Decrement, [(byte)count]);
-                _programLenght += 2;
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.Decrement];
                 break;
             case '<':
                 _syntaxTree.AddNewOperation(ExtendedInstructions.ShiftDataLeft, ByteNumbersHandler.GetBytes(count));
-                _programLenght += 5;
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.ShiftDataLeft];
                 break;
             case '>':
                 _syntaxTree.AddNewOperation(ExtendedInstructions.ShiftDataRight, ByteNumbersHandler.GetBytes(count));
-                _programLenght += 5;
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.ShiftDataRight];
                 break;
             case '.':
                 _syntaxTree.AddNewOperation(ExtendedInstructions.PrintValue, null);
-                _programLenght++;
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.PrintValue];
                 break;
             case ',':
                 _syntaxTree.AddNewOperation(ExtendedInstructions.ReadValue, null);
-                _programLenght++;
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.ReadValue];
                 break;
             case '[':
-                _programLenght += 5; 
+                _programLenght += InstructionLengths[(int)ExtendedInstructions.LeftBracket];
                 Bracket bracket = new Bracket(_programLenght);
                 BracketStack.Add(bracket);
                 _syntaxTree.AddNewOperation(ExtendedInstructions.LeftBracket, null);
@@ -144,14 +162,26 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
                     throw new SyntaxErrorException("Invalid parenthesis");
                 }
 
-                _programLenght += 5;
-                
+                LoopStart loop = _syntaxTree.GetCurrentScope();
                 Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
-                    
-                _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
-                
-                _syntaxTree.AddNewOperation(ExtendedInstructions.RightBracket, ByteNumbersHandler.GetBytes(bracketPopped.Address));
-                
+
+                if (loop.IsSetMemoryZero())
+                {
+                    // int SetMemoryZeroExplicitLen = 12;
+                    // int SetMemoryZeroLen = 1;
+                    _programLenght -= 6;
+                    _syntaxTree.SwapCurrentScope(ExtendedInstructions.SetMemoryZero, null);
+                }
+                else
+                {
+                    _programLenght += InstructionLengths[(int)ExtendedInstructions.RightBracket];
+
+                    _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
+
+                    _syntaxTree.AddNewOperation(ExtendedInstructions.RightBracket,
+                        ByteNumbersHandler.GetBytes(bracketPopped.Address));
+                }
+
                 break;
         }
     }
