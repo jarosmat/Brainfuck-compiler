@@ -4,52 +4,85 @@ namespace BytecodeGenerator;
 
 public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructions>
 {
-    private readonly struct Operation(byte opCode, byte[] pars) 
+    private class Operation(ExtendedInstructions opCode, byte[]? pars)
     {
-        public readonly byte OpCode { get;  } = opCode;
-        public readonly byte[] Parameters { get; } = pars;
+        protected ExtendedInstructions OpCode { get;  } = opCode;
+        protected byte[]? Parameters { get; } = pars;
 
-        public void AddBytes(List<byte> bytes)
+        public virtual void AddBytes(List<byte> bytes)
         {
-            bytes.Add(OpCode);
-            foreach (var byt in Parameters)
+            bytes.Add((byte)OpCode);
+            if (Parameters != null)
+                foreach (var byt in Parameters)
+                {
+                    bytes.Add(byt);
+                }
+        }
+    }
+    
+    private class LoopStart(byte[]? pars) : Operation(ExtendedInstructions.LeftBracket, pars)
+    {
+        protected readonly List<Operation> Operations = new List<Operation>();
+
+        public void AddOperation(ExtendedInstructions opCode, byte[]? pars)
+        {
+            Operations.Add(new Operation(opCode, pars));
+        }
+        
+        public override void AddBytes(List<byte> bytes)
+        {
+            bytes.Add((byte)OpCode);
+            if (Parameters != null)
+                foreach (var byt in Parameters)
+                {
+                    bytes.Add(byt);
+                }
+
+            foreach (var operation in Operations)
             {
-                bytes.Add(byt);
+                operation.AddBytes(bytes);
             }
         }
     }
     
-    private struct Loop(int startAddress)
+    private class Program : LoopStart
     {
-        public readonly int Start { get; } = startAddress;
-        public int? End { get; set; } = null;
-        private readonly List<Operation> _operations = new List<Operation>();
+        private readonly List<LoopStart> _scopeStack = new List<LoopStart>();
+        private LoopStart _currentScope;
 
-        public void AddOperation(Operation operation)
+        public Program() : base(null)
         {
-            _operations.Add(operation);
+            _currentScope = this;
         }
 
-        public void SetEnd(int end)
+        public void AddNewOperation(ExtendedInstructions opCode, byte[]? pars)
         {
-            End = end;
-        }
-
-        public void AddBytes(List<byte> bytes)
-        {
-            if (End == null)
+            if (OpCode == ExtendedInstructions.LeftBracket)
             {
-                throw new Exception("End address has not been specified");
+                _scopeStack.Add(_currentScope);
+                _currentScope = new LoopStart(pars);
             }
+            else if (OpCode == ExtendedInstructions.RightBracket)
+            {
+                _currentScope.AddOperation(opCode, pars);
+                _currentScope = NotRelatedFunctions.PopFromList(_scopeStack);
+            }
+            else
+            {
+                _currentScope.AddOperation(opCode, pars);
+            }
+        }
 
-            foreach (var operation in _operations)
+        public override void AddBytes(List<byte> bytes)
+        {
+            foreach (var operation in Operations)
             {
                 operation.AddBytes(bytes);
             }
         }
     }
 
-    private List<Operation> SyntaxTree;
+    private List<Operation> SyntaxTree = new List<Operation>();
     
     private const Fingerprints Fingerprint = Fingerprints.SecondLevelByteCode;
     
