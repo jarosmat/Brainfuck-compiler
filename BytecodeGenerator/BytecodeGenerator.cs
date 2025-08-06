@@ -2,7 +2,7 @@ using Utilities;
 
 namespace BytecodeGenerator;
 
-public abstract class BytecodeGenerator<TCommandType>
+public abstract class BytecodeGenerator
 {
     protected class Bracket(int address)
     {
@@ -22,15 +22,15 @@ public abstract class BytecodeGenerator<TCommandType>
         ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }
 
-    protected BytecodeGenerator(string fileName, Fingerprints fingerprint)
+    protected BytecodeGenerator(FileInfo file, Fingerprints fingerprint)
     {
-        if (!File.Exists(fileName))
+        if (!file.Exists)
         {
-            throw new FileNotFoundException($"could not find file {fileName}");
+            throw new FileNotFoundException($"could not find file {file.Name}");
         }
 
         Bytes = new List<byte>();
-        StreamReader = new StreamReader(fileName);
+        StreamReader = file.OpenText();
         BracketStack = new List<Bracket>();
         ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }

@@ -3,11 +3,11 @@ using Utilities;
 
 namespace BytecodeGenerator;
 
-public class SimpleByteCodeGenerator : BytecodeGenerator<SimpleInstructions>
+public class SimpleByteCodeGenerator : BytecodeGenerator
 {
     private const Fingerprints Fingerprint = Fingerprints.SimpleByteCode;
 
-    public SimpleByteCodeGenerator(string fileName) : base(fileName, Fingerprint) { }
+    public SimpleByteCodeGenerator(FileInfo file) : base(file, Fingerprint) { }
 
     public SimpleByteCodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint) { }
 

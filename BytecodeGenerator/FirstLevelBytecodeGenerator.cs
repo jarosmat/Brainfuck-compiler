@@ -4,12 +4,12 @@ using Utilities;
 namespace BytecodeGenerator;
 
 
-public class FirstLevelBytecodeGenerator : BytecodeGenerator<SimpleInstructions>
+public class FirstLevelBytecodeGenerator : BytecodeGenerator
 {
     private const int MemoryShiftParameterLenght = 4;
     private const Fingerprints Fingerprint = Fingerprints.FirstLevelByteCode;
     
-    public FirstLevelBytecodeGenerator(string fileName) : base(fileName, Fingerprint) { }
+    public FirstLevelBytecodeGenerator(FileInfo file) : base(file, Fingerprint) { }
 
     public FirstLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
 

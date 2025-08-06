@@ -2,7 +2,7 @@ using System.Data;
 using Utilities;
 namespace BytecodeGenerator;
 
-public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructions>
+public class SecondLevelBytecodeGenerator : BytecodeGenerator
 {
     private class Operation(ExtendedInstructions opCode, byte[]? pars)
     {
@@ -151,7 +151,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator<ExtendedInstructio
     private int _programLenght = 4;
     
     private static readonly int[] InstructionLengths = [2, 2, 5, 5, 1, 1, 5, 5, 1, 6];
-    public SecondLevelBytecodeGenerator(string fileName) : base(fileName, Fingerprint) { }
+    public SecondLevelBytecodeGenerator(FileInfo file) : base(file, Fingerprint) { }
 
     public SecondLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
 
