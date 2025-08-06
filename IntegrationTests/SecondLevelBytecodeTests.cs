@@ -7,13 +7,14 @@ namespace IntegrationTests;
 public class SecondLevelBytecodeTests
 {
     string filename = "../../../../BrainfuckTestPrograms/factor.bf";
+    private FileInfo info = new FileInfo("../../../../BrainfuckTestPrograms/factor.bf");
     [Fact]
     public void FactorNumberUsingSimpleBytecode()
     {
         using (IoHandler handler = new IoHandler("1234\n"))
         {
             CodeRunnerFactory factory = CodeRunnerFactory.GetFactory();
-            SecondLevelBytecodeGenerator byteCodeGenerator = new SecondLevelBytecodeGenerator(filename);
+            SecondLevelBytecodeGenerator byteCodeGenerator = new SecondLevelBytecodeGenerator(info);
             byte[] bytes = byteCodeGenerator.CreateByteCode();
             CodeRunner codeRunner = factory.GetCodeRunner(bytes);
             Interpreter interpreter = new Interpreter();
