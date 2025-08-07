@@ -210,7 +210,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                     // Console.WriteLine("in here");
                     //int MoveDataExplicitLen = 2 + 2 + 5 + 5 + 5 + 5 = 24;
                     //int MoveDataLen = 6
-                    _programLenght -= 13; //Last bracket was not added
+                    _programLenght -= 13; //Last bracket was not added and lenght of this instruction was not added
                     List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
                     byte[] pars = new byte[5];
                     pars[0] = operations[2].Parameters![0];
@@ -231,7 +231,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                 {
                     //int MoveDataExplicitLen = 2 + 2 + 5 + 5 + 5 + 5 = 24;
                     //int MoveDataLen = 6
-                    _programLenght -= 19; //Last bracket was not added
+                    _programLenght -= 19; //Last bracket was not added and lenght of this instruction was not added
                     List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
                     byte[] pars = new byte[5];
                     pars[0] = operations[1].Parameters![0];
@@ -241,7 +241,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                     {
                         shift = ByteNumbersHandler.GetBytes( - ByteNumbersHandler.GetNumber(firstShift.Parameters));
                     }
-
+                
                     for (int i = 0; i < 4; i++)
                     {
                         pars[i + 1] = shift![i];
