@@ -33,9 +33,15 @@ public class SecondLevelCodeRunner : FirstLevelCodeRunner
         // One byte for multiplication should be ok, since more is not practical and 4 bytes for address
         // Going to write some tests and then implement it, ok after instruction first byte is multiplication,
         // and 4 byte for relative position of node since I cant calculate exact address at compile time, these 4 bytes will be signed int
+        if (Memory[DataPointer] == 0)
+        {
+            InstructionPointer += _moveDataCoefficientLenght + _moveDataMemoryShift;
+            return;
+        }
+
         int coefficient = Code[InstructionPointer];
         InstructionPointer += _moveDataCoefficientLenght;
-        int shift = ByteNumbersHandler.GetNumber(Code, InstructionPointer, _moveDataMemoryShift);
+        var shift = ByteNumbersHandler.GetNumber(Code, InstructionPointer, _moveDataMemoryShift);
         InstructionPointer += _moveDataMemoryShift;
 
         Memory[DataPointer + shift] += (byte)(Memory[DataPointer] * coefficient);
