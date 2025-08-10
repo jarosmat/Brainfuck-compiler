@@ -4,9 +4,10 @@ using Utilities;
 using System.CommandLine;
 
 namespace Brainfuck;
-class Program
+
+internal static class Program
 {
-    static int Main(string[] args)
+    private static int Main(string[] args)
     {
         BytecodeGenerator.BytecodeGenerator bytecodeGenerator;
         BytecodeGeneratorFactory factory = BytecodeGeneratorFactory.GetFactory();
@@ -14,12 +15,17 @@ class Program
         Interpreter interpreter = new Interpreter();
         
         var rootCommand = new RootCommand("Virtual machine for Brainfuck programing language");
-        Option<int> versionOption = new Option<int>("-v");
-        versionOption.Description = "Version of bytecode to use: 0 for Simple, 1 for first level, 2 for second level";
-        versionOption.DefaultValueFactory = result => 2;
-        
-        Option<FileInfo> dumpBytecode = new Option<FileInfo>("-b");
-        
+        Option<int> versionOption = new Option<int>("-v")
+        {
+            Description = "Version of bytecode to use: 0 for Simple, 1 for first level, 2 for second level",
+            DefaultValueFactory = _ => 2
+        };
+
+        Option<FileInfo> dumpBytecode = new Option<FileInfo>("-b")
+        {
+            Description = "Specify file where to export assembly of compiled code"
+        };
+
         Argument<FileInfo> file = new Argument<FileInfo>("file to run");
         
         rootCommand.Options.Add(versionOption);
