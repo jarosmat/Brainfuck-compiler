@@ -245,17 +245,13 @@ public class AssemblyTranslator
                     break;
                 case 0x09:
                     streamWriter.Write("mv ");
-                    Console.Write("mv ");
                     streamWriter.Write($"{code[index]} ");
-                    Console.Write($"{code[index]} ");
                     index++;
                     for (int i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
-                        Console.Write($"{code[index + i]} ");
                     }
                     streamWriter.Write("\n");
-                    Console.Write("\n");
                     index += 4;
                     break;
             }
