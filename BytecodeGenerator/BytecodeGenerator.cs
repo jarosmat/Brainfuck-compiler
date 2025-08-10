@@ -17,8 +17,8 @@ public abstract class BytecodeGenerator
     protected BytecodeGenerator(TextReader streamReader, Fingerprints fingerprint)
     {
         StreamReader = streamReader;
-        BracketStack = new List<Bracket>();
-        Bytes = new List<byte>();
+        BracketStack = [];
+        Bytes = [];
         ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }
 
@@ -29,9 +29,9 @@ public abstract class BytecodeGenerator
             throw new FileNotFoundException($"could not find file {file.Name}");
         }
 
-        Bytes = new List<byte>();
+        Bytes = [];
         StreamReader = file.OpenText();
-        BracketStack = new List<Bracket>();
+        BracketStack = [];
         ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }
 

@@ -41,7 +41,7 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator
                 break;
             case '[':
                 Bytes.Add((byte)SimpleInstructions.LeftBracket);
-                Bracket bracket = new Bracket(Bytes.Count);
+                var bracket = new Bracket(Bytes.Count);
                 BracketStack.Add(bracket);
                 ByteNumbersHandler.AddBytesToList(Bytes, 0);
                 break;
@@ -52,7 +52,7 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator
                 }
                 Bytes.Add((byte)SimpleInstructions.RightBracket);
                     
-                Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+                var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
                     
                 ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
                 ByteNumbersHandler.AddBytesToList(Bytes ,bracketPopped.Address + AddressLenght);
@@ -63,9 +63,9 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator
 
     public override byte[] CreateByteCode()
     {
-        int currChar = StreamReader.Read();
-        int lastChar = 0;
-        int charCount = 1;
+        var currChar = StreamReader.Read();
+        var lastChar = 0;
+        var charCount = 1;
         while (currChar != -1)
         {
             if (currChar != lastChar)

@@ -39,7 +39,7 @@ public class SimpleByteCodeGenerator : BytecodeGenerator
                     break;
                 case '[':
                     Bytes.Add((byte)SimpleInstructions.LeftBracket);
-                    Bracket bracket = new Bracket(Bytes.Count);
+                    var bracket = new Bracket(Bytes.Count);
                     BracketStack.Add(bracket);
                     for (int i = 0; i < AddressLenght; i++)
                     {
@@ -53,11 +53,11 @@ public class SimpleByteCodeGenerator : BytecodeGenerator
                     }
                     Bytes.Add((byte)SimpleInstructions.RightBracket);
                     
-                    Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+                    var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
                     
                     ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
                     
-                    foreach (byte byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1))
+                    foreach (var byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1)!)
                     {
                         Bytes.Add(byteToAdd);
                     }

@@ -37,7 +37,7 @@ internal static class Program
         {
             FileInfo? fileInfo = parseResult.GetValue(file);
             int genType = parseResult.GetValue(versionOption);
-            if (fileInfo != null) bytecodeGenerator = factory.GetBytecodeGenerator(genType, fileInfo);
+            if (fileInfo != null) bytecodeGenerator = BytecodeGeneratorFactory.GetBytecodeGenerator(genType, fileInfo);
             else
             {
                 Console.WriteLine("Source file not specified");

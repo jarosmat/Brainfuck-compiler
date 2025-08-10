@@ -7,15 +7,10 @@ public class BytecodeGeneratorFactory
 
     public static BytecodeGeneratorFactory GetFactory()
     {
-        if (RunnerFactory != null)
-        {
-            return RunnerFactory;
-        }
-
-        return new BytecodeGeneratorFactory();
+        return RunnerFactory ?? new BytecodeGeneratorFactory();
     }
 
-    public BytecodeGenerator GetBytecodeGenerator(int num, FileInfo file)
+    public static BytecodeGenerator GetBytecodeGenerator(int num, FileInfo file)
     {
         BytecodeGenerator result;
         switch (num)
