@@ -1,4 +1,3 @@
-using BytecodeGenerator;
 namespace Utilities;
 
 public class AssemblyTranslator
@@ -54,11 +53,11 @@ public class AssemblyTranslator
         
         PrintFingerPrint(streamWriter, Fingerprints.SimpleByteCode);
         
-        int index = 4;
+        var index = 4;
 
         while (index < code.Length)
         {
-            byte instruction = code[index];
+            var instruction = code[index];
             index++;
             switch (instruction)
             {
@@ -82,7 +81,7 @@ public class AssemblyTranslator
                     break;
                 case 0x06:
                     streamWriter.Write($"lbr ");
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
                     }
@@ -91,7 +90,7 @@ public class AssemblyTranslator
                     break;
                 case 0x07:
                     streamWriter.Write($"rbr ");
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
                     }
@@ -111,11 +110,11 @@ public class AssemblyTranslator
         
         PrintFingerPrint(streamWriter, Fingerprints.FirstLevelByteCode);
         
-        int index = 4;
+        var index = 4;
 
         while (index < code.Length)
         {
-            byte instruction = code[index];
+            var instruction = code[index];
             index++;
             switch (instruction)
             {
@@ -129,7 +128,7 @@ public class AssemblyTranslator
                     break;
                 case 0x02:
                     streamWriter.Write($"shl ");
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
                     }
@@ -138,7 +137,7 @@ public class AssemblyTranslator
                     break;
                 case 0x03:
                     streamWriter.Write($"shr ");
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
                     }
@@ -153,7 +152,7 @@ public class AssemblyTranslator
                     break;
                 case 0x06:
                     streamWriter.Write($"lbr ");
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
                     }
@@ -162,7 +161,7 @@ public class AssemblyTranslator
                     break;
                 case 0x07:
                     streamWriter.Write($"rbr ");
-                    for (int i = 0; i < 4; i++)
+                    for (var i = 0; i < 4; i++)
                     {
                         streamWriter.Write($"{code[index + i]} ");
                     }

@@ -1,11 +1,11 @@
 namespace Utilities;
 
-public class NotRelatedFunctions
+public static class NotRelatedFunctions
 {
     public static T PopFromList<T>(List<T> list)
     {
-        int lastItem = list.Count - 1;
-        T itemPopped = list[lastItem];
+        var lastItem = list.Count - 1;
+        var itemPopped = list[lastItem];
         list.RemoveAt(lastItem);
         return itemPopped;
     }

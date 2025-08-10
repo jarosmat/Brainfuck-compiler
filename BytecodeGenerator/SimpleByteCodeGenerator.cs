@@ -57,7 +57,7 @@ public class SimpleByteCodeGenerator : BytecodeGenerator
                     
                     ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
                     
-                    foreach (var byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1)!)
+                    foreach (var byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1))
                     {
                         Bytes.Add(byteToAdd);
                     }

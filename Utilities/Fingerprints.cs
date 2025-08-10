@@ -1,4 +1,4 @@
-namespace BytecodeGenerator;
+namespace Utilities;
 
 public enum Fingerprints
 {
