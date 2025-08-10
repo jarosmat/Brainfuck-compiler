@@ -9,17 +9,12 @@ public class CodeRunnerFactory
 
     public static CodeRunnerFactory GetFactory()
     {
-        if (RunnerFactory != null)
-        {
-            return RunnerFactory;
-        }
-
-        return new CodeRunnerFactory();
+        return RunnerFactory ?? new CodeRunnerFactory();
     }
 
     public CodeRunner GetCodeRunner(byte[] bytes)
     {
-        int num = ByteNumbersHandler.GetNumber(bytes, 0, CodeRunner.FingerprintLenght);
+        var num = ByteNumbersHandler.GetNumber(bytes, 0, CodeRunner.FingerprintLenght);
         CodeRunner result;
         switch (num)
         {

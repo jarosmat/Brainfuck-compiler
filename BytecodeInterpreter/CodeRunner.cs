@@ -4,7 +4,7 @@ namespace BytecodeInterpreter;
 
 public abstract class CodeRunner
 {
-    private static readonly int MemorySize = 30000;
+    private const int MemorySize = 30000;
     protected readonly byte[] Memory = new byte[MemorySize];
     private int _dataPointer;
     public const int FingerprintLenght = 4;
@@ -49,9 +49,9 @@ public abstract class CodeRunner
 
     protected void ReadValue()
     {
-        int intIn = Console.Read();
+        var intIn = Console.Read();
         char[] charIn = [(char)intIn];
-        byte[] bytes = Utf8.GetBytes(charIn);
+        var bytes = Utf8.GetBytes(charIn);
         if (bytes[0] == 13)
         {
             bytes[0] = 10;
