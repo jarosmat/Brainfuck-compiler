@@ -1,6 +1,6 @@
 using BytecodeGenerator;
 using BytecodeInterpreter;
-using UnitTests;
+using Utilities;
 
 namespace IntegrationTests;
 

@@ -1,5 +1,7 @@
 using BytecodeInterpreter;
 using System.Text;
+using Utilities;
+
 namespace UnitTests;
 
 [Collection("IO Collection")]

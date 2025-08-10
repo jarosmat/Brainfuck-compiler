@@ -1,5 +1,6 @@
 using System.Text;
 using BytecodeInterpreter;
+using Utilities;
 namespace UnitTests;
 
 [Collection("IO Collection")]
