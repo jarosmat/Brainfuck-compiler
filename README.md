@@ -16,7 +16,13 @@
 
 *Pokud je váš program v C#, stačí upravit JMENO_PROJEKTU níže a případně doplnit další informace ke spuštění (jestli má nějaké parametry, vstupní soubory, ...). Pokud je parametrů hodně nebo je potřeba nějaký speciální formát vstupních souborů, nechte tuto sekci jen stručnou a podrobněji to popište v uživatelské dokumentaci (a sem dejte odkaz). Pokud je program v jiném programovacím jazyce nebo pro spuštění vyžaduje instalaci nějakých knihoven či nástrojů, tuto sekci vhodně upravte, abych byl při kontrole schopen nainstalovat si vše potřebné a program spustit.*
 
-Pro spuštění přejděte do složky `JMENO_PROJEKTU` a spusťte příkaz `dotnet run`.
+Před spuětěním programu je potřeba nainstalovat knihovnu `System.CommandLine`, pro instalaci prejděte do složky `Brainfuck`
+a spusťte příkaz `dotnet add package System.CommandLine --prerelease`
+
+Pro spuštění zůstaňte ve složce `Brainfuck` a spusťte příkaz `dotnet run -- -h`, nebo spusťte ve stejné složce `dotnet build`
+a přejděte do složky `Brainfuck/Brainfuck/bin/Debug/net9.0`, kde spusťte již vytvořený executable soubor jako konzolovou aplikaci.
+Pro referenci k použití použijte option `-h` při spouštění nebo přejděte na [tento odkaz](docs/user.md) pro rozsáhlejší dokumentaci
+
 
 ## Dokumentace
 
