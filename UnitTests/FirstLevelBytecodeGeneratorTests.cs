@@ -4,46 +4,52 @@ namespace UnitTests;
 
 public class FirstLevelBytecodeGeneratorTests
 {
+    private static byte[] Generate(string input)
+    {
+        var streamReader = new StringReader(input);
+        var byteCodeGenerator = new FirstLevelBytecodeGenerator(streamReader);
+        var result = byteCodeGenerator.CreateByteCode();
+        streamReader.Close();
+        return result;
+    }
+    
     [Fact]
     public void SimpleGeneration()
     {
-        StringReader streamReader = new StringReader("++-->><<,.");
-        FirstLevelBytecodeGenerator byteCodeGenerator = new FirstLevelBytecodeGenerator(streamReader);
-        byte[] result = byteCodeGenerator.CreateByteCode();
+        const string input = "++-->><<,.";
+        var result = Generate(input);
         Assert.Equal([0x01, 0x00, 0x00, 0x00, 0x00, 0x02, 0x01, 0x02, 0x03, 0x02, 0x00, 0x00, 0x00, 0x02, 0x02, 0x00, 0x00, 0x00, 0x05, 0x04], result);
     }
     [Fact]
     public void SimpleLoopGeneration()
     {
-        StringReader stringReader = new StringReader("[+]++-->><<,.[->+<]");
-        FirstLevelBytecodeGenerator byteCodeGenerator = new FirstLevelBytecodeGenerator(stringReader);
-        byte[] result = byteCodeGenerator.CreateByteCode();
+        const string input = "[+]++-->><<,.[->+<]";
+        byte[] result = Generate(input);
         Assert.Equal([0x01, 0x00, 0x00, 0x00, 0x06, 0x10, 0x00, 0x00, 0x00, 0x00, 0x01, 0x07, 0x09, 0x00, 0x00, 0x00, 0x00, 0x02, 0x01, 0x02, 0x03, 0x02, 0x00, 0x00, 0x00, 0x02, 0x02, 0x00, 0x00, 0x00, 0x05, 0x04, 0x06, 0x38, 0x00, 0x00, 0x00, 0x01, 0x01, 0x03, 0x01, 0x00, 0x00, 0x00, 0x00, 0x01, 0x02, 0x01, 0x00, 0x00, 0x00, 0x07, 0x25, 0x00, 0x00, 0x00], result);
     }
 
     [Fact]
     public void WrongParenthesis1()
     {
-        StringReader stringReader = new StringReader("[[[[]]]");
-        FirstLevelBytecodeGenerator byteCodeGenerator = new FirstLevelBytecodeGenerator(stringReader);
+        var stringReader = new StringReader("[[[[]]]");
+        var byteCodeGenerator = new FirstLevelBytecodeGenerator(stringReader);
         Assert.Throws<SyntaxErrorException>(() => byteCodeGenerator.CreateByteCode());
     }
     
     [Fact]
     public void WrongParenthesis2()
     {
-        StringReader stringReader = new StringReader("[[]]]");
-        FirstLevelBytecodeGenerator byteCodeGenerator = new FirstLevelBytecodeGenerator(stringReader);
+        var stringReader = new StringReader("[[]]]");
+        var byteCodeGenerator = new FirstLevelBytecodeGenerator(stringReader);
         Assert.Throws<SyntaxErrorException>(() => byteCodeGenerator.CreateByteCode());
     }
 
     [Fact]
     public void NestedLoopGeneration()
     {
-        StringReader stringReader = new StringReader("+++[-[>]+]--[+[>[]<][<]]");
-        FirstLevelBytecodeGenerator byteCodeGenerator = new FirstLevelBytecodeGenerator(stringReader);
+        const string input = "+++[-[>]+]--[+[>[]<][<]]";
         byte[] correctResult = [0x01, 0x00, 0x00, 0x00, 0x00, 0x03, 0x06, 0x23, 0x00, 0x00, 0x00, 0x01, 0x01, 0x06, 0x1C, 0x00, 0x00, 0x00, 0x03, 0x01, 0x00, 0x00, 0x00, 0x07, 0x12, 0x00, 0x00, 0x00, 0x00, 0x01, 0x07, 0x0B, 0x00, 0x00, 0x00, 0x01, 0x02, 0x06, 0x5E, 0x00, 0x00, 0x00, 0x00, 0x01, 0x06, 0x4A, 0x00, 0x00, 0x00, 0x03, 0x01, 0x00, 0x00, 0x00, 0x06, 0x40, 0x00, 0x00, 0x00, 0x07, 0x3B, 0x00, 0x00, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x07, 0x31, 0x00, 0x00, 0x00, 0x06, 0x59, 0x00, 0x00, 0x00, 0x02, 0x01, 0x00, 0x00, 0x00, 0x07, 0x4F, 0x00, 0x00, 0x00, 0x07, 0x2A, 0x00, 0x00, 0x00];
-        byte[] actualResult = byteCodeGenerator.CreateByteCode();
+        var actualResult = Generate(input);
         Assert.Equal(correctResult, actualResult);
     }
 }

@@ -6,21 +6,18 @@ namespace IntegrationTests;
 [Collection("IO Collection")]
 public class SecondLevelBytecodeTests
 {
-    string filename = "../../../../BrainfuckTestPrograms/factor.bf";
-    private FileInfo info = new FileInfo("../../../../BrainfuckTestPrograms/factor.bf");
+    private readonly FileInfo _info = new FileInfo("../../../../BrainfuckTestPrograms/factor.bf");
     [Fact]
     public void FactorNumberUsingSimpleBytecode()
     {
-        using (IoHandler handler = new IoHandler("1234\n"))
-        {
-            CodeRunnerFactory factory = CodeRunnerFactory.GetFactory();
-            SecondLevelBytecodeGenerator byteCodeGenerator = new SecondLevelBytecodeGenerator(info);
-            byte[] bytes = byteCodeGenerator.CreateByteCode();
-            CodeRunner codeRunner = factory.GetCodeRunner(bytes);
-            Interpreter interpreter = new Interpreter();
-            interpreter.Run(codeRunner);
-            string output = handler.GetOutput();
-            Assert.Equal("1234: 2 617\n", output);
-        }
+        using var handler = new IoHandler("1234\n");
+        var factory = CodeRunnerFactory.GetFactory();
+        var byteCodeGenerator = new SecondLevelBytecodeGenerator(_info);
+        var bytes = byteCodeGenerator.CreateByteCode();
+        var codeRunner = factory.GetCodeRunner(bytes);
+        var interpreter = new Interpreter();
+        interpreter.Run(codeRunner);
+        var output = handler.GetOutput();
+        Assert.Equal("1234: 2 617\n", output);
     }   
 }
