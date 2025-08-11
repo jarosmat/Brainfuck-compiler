@@ -1,32 +1,23 @@
-# Zápočtový program: *název vašeho programu*
-
-*Tento soubor slouží jako šablona. Vhodně ho upravte podle vašeho projektu. Text psaný kurzívou obsahuje instrukce pro vás – před odevzdáním je prosím odstraňte nebo nahraďte vlastním textem.*
+# Zápočtový program: Brainfuck virtual machine
 
 ## Specifikace
 
-*Sem napište stručnou specifikaci vašeho programu – co váš program má dělat (podobně jako jste mi psali do mailu). Stačí zhruba 1–2 odstavce.*
-
-## *Doporučená struktura projektu*
-
-*Je vhodné v repozitáři oddělit zdrojové kódy vašeho programu od dokumentace (a případně testů, pokud je máte). Pro zdrojové kódy tedy vytvořte složku, v C# se nejčastěji pojmenovává podle jména projektu. Například pokud by se váš program jmenoval JMENO_PROJEKTU, tak budete mít složku `JMENO_PROJEKTU` a v ní `JMENO_PROJEKTU.csproj` a `Program.cs` a případně další `.cs` soubory.*
-
-*Pro dokumentaci je připravena složka `docs`, její obsah vhodně upravte.*
+Tento program má za úkol kompilovat programovací jazyk Brainfuck do mnou definovaného bytekódu, a následně tento bytekód
+interpretovat. Definoval jsem více verzí bytekódu, různé verze mají za úkol optimalizovat výpočet, toho dosáhnu přidáním
+parametrů pro instrukce nebo rozšířením bytekódu a nahrazením některých konstrukcí v jazyce Brainfuck jednou instrukcí v
+mnou definovaném bytekódu.
 
 ## Instalace a spuštění
 
-*Pokud je váš program v C#, stačí upravit JMENO_PROJEKTU níže a případně doplnit další informace ke spuštění (jestli má nějaké parametry, vstupní soubory, ...). Pokud je parametrů hodně nebo je potřeba nějaký speciální formát vstupních souborů, nechte tuto sekci jen stručnou a podrobněji to popište v uživatelské dokumentaci (a sem dejte odkaz). Pokud je program v jiném programovacím jazyce nebo pro spuštění vyžaduje instalaci nějakých knihoven či nástrojů, tuto sekci vhodně upravte, abych byl při kontrole schopen nainstalovat si vše potřebné a program spustit.*
-
 Před spuětěním programu je potřeba nainstalovat knihovnu `System.CommandLine`, pro instalaci prejděte do složky `Brainfuck`
-a spusťte příkaz `dotnet add package System.CommandLine --prerelease`
+a spusťte příkaz `dotnet add package System.CommandLine --prerelease` (je nutné specifikovat `--prerelease`, jelikož knihovna je
+stále v beta verzi)
 
 Pro spuštění zůstaňte ve složce `Brainfuck` a spusťte příkaz `dotnet run -- -h`, nebo spusťte ve stejné složce `dotnet build`
 a přejděte do složky `Brainfuck/Brainfuck/bin/Debug/net9.0`, kde spusťte již vytvořený executable soubor jako konzolovou aplikaci.
 Pro referenci k použití použijte option `-h` při spouštění nebo přejděte na [tento odkaz](docs/user.md) pro rozsáhlejší dokumentaci
 
-
 ## Dokumentace
-
-*Tady bude rozcestník k dokumentaci k vašemu programu. Pokud je to potřeba, upravte odkazy na soubory s dokumentací. Pokud dokumentaci nepíšete v Markdownu, uveďte zde, kde ji najdu (např. odkaz na PDF soubor).*
 
 * [Uživatelská dokumentace](docs/user.md)
 * [Ukázky použití](docs/examples.md)
