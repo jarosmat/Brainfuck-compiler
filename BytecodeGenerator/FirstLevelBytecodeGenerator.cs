@@ -68,6 +68,12 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator
         var charCount = 1;
         while (currChar != -1)
         {
+            if (currChar != '.' && currChar != ',' && currChar != '[' && currChar != ']' && currChar != '+' &&
+                currChar != '-' && currChar != '<' && currChar != '>')
+            {
+                currChar = StreamReader.Read();
+                continue;
+            }
             if (currChar != lastChar)
             {
                 AddOperation(lastChar, charCount);
