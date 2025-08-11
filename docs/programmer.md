@@ -2,6 +2,48 @@
 
 *Tady vysvětlete hlavní koncepty a strukturu vašeho programu. Pokud je váš program rozdělen do několika souborů, napište, k čemu každý soubor slouží a jakou funkcionalitu (třídy nebo funkce) v něm najdu. Pokud v programu používáte třídy, stručně popište význam těch nejdůležitějších (co mají za úkol).*
 
+## Bytekódy
+
+### Simple bytekód
+Simple bytekód má 8 instrukcí
+- 0x00 je přičtení 1 k aktuální buňce
+- 0x01 je odečtení 1 od aktuální buňky
+- 0x02 je posunutí data pointeru o jedno doleva
+- 0x03 je posunutí data pointeru o jedno doprava
+- 0x04 je vypsání hodnoty aktuální buňky
+- 0x05 je přečtění jednoho bytu ze vstupu
+- 0x06 is levá závorka, má 4 bytový parametr, který je adresa kam se má skočit, pokud zkončí iterace skrz cyklus, parametr je LSB first
+- 0x07 is pravá závorka, má 4 bytový parametr, který je adresa kam se má skočit, pokud se má pokračovat v iterovaní cyklu, parametr je LSB first
+
+### First level bytekód
+First level bytekód má 8 instrukcí, ale spojuje více stejých instrukcí, které přicházejí hned za sebou do jedné instrukce
+- parametr těchto instrukcí specifikuje, kolik elementárních instrukcí jdoucích za sebou nahrazuje
+  - 0x00 je přičtení, má 1 bytový parametr
+  - 0x01 je odečtení, má 1 bytový parametr
+  - 0x02 is posunutí data pointeru doleva, má 4 bytový parametr
+  - 0x03 is posunutí data pointeru doleva, má 4 bytový parametr
+- 0x04 je vypsání hodnoty aktuální buňky
+- 0x05 je přečtění jednoho bytu ze vstupu
+- 0x06 is levá závorka, má 4 bytový parametr, který je adresa kam se má skočit, pokud zkončí iterace skrz cyklus, parametr je LSB first
+- 0x07 is pravá závorka, má 4 bytový parametr, který je adresa kam se má skočit, pokud se má pokračovat v iterovaní cyklu, parametr je LSB first
+
+### Second level bytekód
+
+Tento bytekód je stejný jako First level bytekód, ale je rozšířen o dvě další instrukce:
+- 0x08 - Set memory zero, tato instrukce nahrazuje tento cyklus v kódu Brainfucku: `[-]` nebo `[+]`
+  - tato instrukce nastaví hodnotu aktivní paměťové buňky na 0
+  - tato instrukce nemá žádné parametry
+- 0x09 - Move data, tato instrukce nahrazuje tento cyklus v kódu Brainfucku: `[->+<]`, `[-<+>]`, `[<+>-]` nebo `[>+<-]`,
+který se stará o přesun hodnoty z jedné buňky do buňky další
+  - počet instrukcí pro pohyb v paměti může být více, ale musí být stejný pro pohyb do obou směrů a tyto instrukce musí být
+  bezprostředně za sebou
+  - počet instrukcí pro přičtení může být větší než jedna (to lze využít k vynásobení hodnoty v paměti), ale všechny musí
+  být bezprostředně za sebou
+  - tato instrukce ma 5 bytů parametrů
+    - první byte koeficient násobení (kolikrát je ve zdrojovém kódu instrukce pro přičtení)
+    - zbylé čtyři byty jsou signed integer, který reprezentuje kam se mají data přesunout (je to relativní posun vzhledem
+    k data pointeru)
+
 ## Struktura programu
 
 Program má 6 projektů:
