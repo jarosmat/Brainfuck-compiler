@@ -89,5 +89,3 @@ ze standartní knihovny C# je machine specific
 
 ### IntegrationTests a UnitTests
 V těchto projekty jsou testy, k testování využívám knihovnu xUnit.
-
-
