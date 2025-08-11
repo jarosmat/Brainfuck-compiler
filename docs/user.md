@@ -24,24 +24,27 @@ Soubory se zdrojovým kódem Brainfucku obyčejně končí příponou .bf
 Před spuětěním programu je potřeba nainstalovat knihovnu `System.CommandLine`, pro instalaci prejděte do složky `Brainfuck`
 a spusťte příkaz `dotnet add package System.CommandLine --prerelease`
 
-Pro sestavení zůstaňte ve složce `Brainfuck` a spusťte příkaz `dotnet build` a přejděte do složky `Brainfuck/Brainfuck/bin/Debug/net9.0`,
+Pro sestavení zůstaňte ve složce `Brainfuck` a spusťte příkaz `dotnet build` a přejděte do složky `/Brainfuck/bin/Debug/net9.0`,
 kde spusťte již vytvořený executable soubor jako konzolovou aplikaci.
 
 ## Ovládání
 
-použití:
-Brainfuck <soubor ke spuštění> [options]
+použití:\
+`Brainfuck <soubor ke spuštění> [options]`
 
 Argumenty:
-<soubor ke spuštění>
+
+`<soubor ke spuštění>`
 
 Options:
--?, -h, --help  Vypíše tento návod v angličtine na příkazovou řádku
---version       Ukáže informace o verzi
--v              Tímto optionem lze specifikovat, jak verzi bytekódu má program použít, pro použití Simple bytekódu: 0, 
-                pro použití First level bytekódu: 1, pro požití Second level bytekódu: 2, pokud nebude specifikováno jinak,
-                bude použit Second level bytekód
--b              Tímto optionem lze specifikovat, do jakého souboru má program vypsat Assembly zkompilovaného programu
+- `-?`, `-h`, `--help`  Vypíše tento návod v angličtine na příkazovou řádku
+- `--version`       Ukáže informace o verzi
+- `-v`              Tímto optionem lze specifikovat, jak verzi bytekódu má program použít:
+  1. pro použití Simple bytekódu: 0, 
+  2. pro použití First level bytekódu: 1
+  3. pro požití Second level bytekódu: 2, 
+  - pokud nebude specifikováno jinak, bude použit Second level bytekód
+- `-b`              Tímto optionem lze specifikovat, do jakého souboru má program vypsat Assembly zkompilovaného programu
 
 
 

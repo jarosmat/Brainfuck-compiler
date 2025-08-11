@@ -9,13 +9,13 @@ mnou definovaném bytekódu.
 
 ## Instalace a spuštění
 
-Před spuětěním programu je potřeba nainstalovat knihovnu `System.CommandLine`, pro instalaci prejděte do složky `Brainfuck`
+Před spuětěním programu je potřeba nainstalovat knihovnu `System.CommandLine`, pro instalaci prejděte do složky `Brainfuck/`
 a spusťte příkaz `dotnet add package System.CommandLine --prerelease` (je nutné specifikovat `--prerelease`, jelikož knihovna je
 stále v beta verzi)
 
-Pro spuštění zůstaňte ve složce `Brainfuck` a spusťte příkaz `dotnet run -- -h`, nebo spusťte ve stejné složce `dotnet build`
-a přejděte do složky `Brainfuck/Brainfuck/bin/Debug/net9.0`, kde spusťte již vytvořený executable soubor jako konzolovou aplikaci.
-Pro referenci k použití použijte option `-h` při spouštění nebo přejděte na [tento odkaz](docs/user.md) pro rozsáhlejší dokumentaci
+Pro spuštění zůstaňte ve složce `Brainfuck/` a spusťte příkaz `dotnet run -- -h`, nebo spusťte ve stejné složce `dotnet build`
+a přejděte do složky `/Brainfuck/bin/Debug/net9.0`, kde spusťte již vytvořený executable soubor jako konzolovou aplikaci.
+Pro referenci k použití použijte option `-h` nebo přejděte na [tento odkaz](docs/user.md) pro rozsáhlejší dokumentaci
 
 ## Dokumentace
 
