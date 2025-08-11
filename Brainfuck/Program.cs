@@ -26,7 +26,17 @@ internal static class Program
             Description = "Specify file where to export assembly of compiled code"
         };
 
-        var file = new Argument<FileInfo>("file to run");
+        var file = new Argument<string?>("file to run")
+        {
+            DefaultValueFactory = result => 
+            {
+                if (result.Tokens.Count == 0)
+                {
+                    return null;
+                }
+                return result.GetValue((Argument<string>)result.Argument);
+            }
+        };
         
         rootCommand.Options.Add(versionOption);
         rootCommand.Arguments.Add(file);
@@ -35,14 +45,20 @@ internal static class Program
         
         rootCommand.SetAction(parseResult =>
         {
-            var fileInfo = parseResult.GetValue(file);
+            var filePath = parseResult.GetValue(file);
             var genType = parseResult.GetValue(versionOption);
-            if (fileInfo == null)
+
+            if (filePath == null)
             {
                 Console.WriteLine("Source file not specified");
                 return 1;
             }
-            bytecodeGenerator = factory.GetBytecodeGenerator(genType, fileInfo);
+            if (!File.Exists(filePath))
+            {
+                Console.WriteLine("Specified source file does not exist");
+                return 1;
+            }
+            bytecodeGenerator = factory.GetBytecodeGenerator(genType, new FileInfo(filePath));
 
             var bytes = bytecodeGenerator.CreateByteCode();
             var bytecodeDump = parseResult.GetValue(dumpBytecode);
