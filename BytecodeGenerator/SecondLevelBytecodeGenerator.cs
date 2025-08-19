@@ -68,7 +68,6 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                 }
                 else if (loop.IsMoveDataStartDecrement())
                 {
-                    // Console.WriteLine("in here");
                     //int MoveDataExplicitLen = 2 + 2 + 5 + 5 + 5 + 5 = 24;
                     //int MoveDataLen = 6
                     _programLenght -= 13; //Last bracket was not added and lenght of this instruction was not added
