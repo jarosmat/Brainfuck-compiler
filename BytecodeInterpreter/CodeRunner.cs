@@ -54,7 +54,7 @@ public abstract class CodeRunner
         var bytes = Utf8.GetBytes(charIn);
         if (bytes[0] == 13)
         {
-            bytes[0] = 10;
+            bytes[0] = 10; // this is just to avoid issues with line breaks on different operating systems 
         }
         Memory[DataPointer] = bytes[0];
     }

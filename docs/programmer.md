@@ -66,6 +66,16 @@ Tento projekt se stará o překlad zdrojového kódu do předem definovaného by
 - `SimpleByteCodeGenerator`, `FirstLevelBytecodeGenerator`, `SecondLevelBytecodeGenerator`, třídy které se starají o
 překlad zdrojového kódu do nějakého určitého bytekódu, všechny z těchto tříd dědí od abstraktní třídy `BytecodeGenerator`
 
+#### `SecondLevelBytecodeGenerator` constants
+Pro odečítání hodnot pro každou instrukci platí, že délka uzavírající závorky není ještě připočtena k `_programLenght`,
+tudíž hodnota odečítaná od `_programLenght` je vždy menší minimálně o těchto 5 bytů.
+- `int MoveDataSubstraction = 13`, toto platí, jelikož délka explicitní operace v bytech je 24 bytů (2 * 5 za závorky, 2 * 2
+za aritmetiku a 2 * 5 za oba posuny v paměti), dále délka jedné Move data instrukce je 6 bytů (viz Second level bytekód).
+  Dohromady: 2 * 5 + 2 * 2 + 2 * 5 - 5 - 6 = 24 - 11 = 13
+- `int SetMemoryZeroSubstraction = 6`, toto platí, jelikož délka explicitní operace v bytech je 12 bytů (2 * 5 za závorky
+a 2 byty za aritmetiku), dále délka jedné Set memory zero instrukce je 1 byte (viz Second level bytekód). Dohromay: 2 * 5 +
+2 - 5 - 1 = 12 - 6 = 6
+
 #### Soubor `SyntaxTreeGenerationClasses.cs`
 Tento soubor obsahuje třídy, které reprezentují kompilovaný program a jeho části v průběhu kompilace, pomocí těchto tříd 
 se staví syntax tree celého programu, tyto třídy využívá pouze `SecondLevelBytecodeGenerator` a to konkrétně k tomu aby 

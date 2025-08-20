@@ -4,8 +4,8 @@ namespace BytecodeInterpreter;
 
 public class SecondLevelCodeRunner : FirstLevelCodeRunner
 {
-    private const int MoveDataMemoryShift = 4;
-    private const int MoveDataCoefficientLenght = 1;
+    private const int MoveDataMemoryShift = 4; // this represents lenght of part of parameter of Move data instruction that specifies shift in memory
+    private const int MoveDataCoefficientLenght = 1; // this represents lenght of part of parameter of Move data instruction that specifies the multiplicator of data
 
     public SecondLevelCodeRunner(byte[] code) : base(code)
     {

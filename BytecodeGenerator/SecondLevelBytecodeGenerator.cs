@@ -9,6 +9,10 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
     
     private const Fingerprints Fingerprint = Fingerprints.SecondLevelByteCode;
 
+    // for reference about values of these constants see reference docs/programmer.md
+    private const int SetMemoryZeroSubstraction = 6;
+    private const int MoveDataSubstraction = 13;
+
     private int _programLenght = 4;
     
     private static readonly int[] InstructionLengths = [2, 2, 5, 5, 1, 1, 5, 5, 1, 6];
@@ -61,16 +65,12 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
 
                 if (loop.IsSetMemoryZero())
                 {
-                    // int SetMemoryZeroExplicitLen = 12;
-                    // int SetMemoryZeroLen = 1;
-                    _programLenght -= 6; //Last bracket was not added
+                    _programLenght -= SetMemoryZeroSubstraction; 
                     _syntaxTree.SwapCurrentScope(ExtendedInstructions.SetMemoryZero, null);
                 }
                 else if (loop.IsMoveDataStartDecrement())
                 {
-                    //int MoveDataExplicitLen = 2 + 2 + 5 + 5 + 5 + 5 = 24;
-                    //int MoveDataLen = 6
-                    _programLenght -= 13; //Last bracket was not added and lenght of this instruction was not added
+                    _programLenght -= MoveDataSubstraction;
                     List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
                     byte[] pars = new byte[5];
                     pars[0] = operations[2].Parameters![0];
@@ -89,9 +89,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                 }
                 else if (loop.IsMoveDataStartShift())
                 {
-                    //int MoveDataExplicitLen = 2 + 2 + 5 + 5 + 5 + 5 = 24;
-                    //int MoveDataLen = 6
-                    _programLenght -= 19; //Last bracket was not added and lenght of this instruction was not added
+                    _programLenght -= MoveDataSubstraction;
                     List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
                     byte[] pars = new byte[5];
                     pars[0] = operations[1].Parameters![0];

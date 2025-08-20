@@ -14,7 +14,7 @@ public class SimpleCodeRunner : CodeRunner
      * 0x06 is left bracket, it has 4 byte parameter, where address of corresponding right bracket is set, parameter is LSB first
      * 0x07 is right bracket, it has 4 byte parameter, where address of corresponding left bracket is set, parameter is LSB first
      */
-    private const int AddressLenght = 4;
+    private const int AddressLenght = 4; // represent lenght in bytes of address for jumps in cycles 
     public SimpleCodeRunner(byte[] code) : base(code){}
 
     public SimpleCodeRunner(string codeAddress) : base(codeAddress){}

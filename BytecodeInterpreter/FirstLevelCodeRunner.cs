@@ -14,9 +14,9 @@ public class FirstLevelCodeRunner : CodeRunner
     * 0x06 is left bracket, it has 4 byte parameter, where address of corresponding right bracket is set, parameter is LSB first
     * 0x07 is right bracket, it has 4 byte parameter, where address of corresponding left bracket is set, parameter is LSB first
     */
-    private const int AddressLenght = 4;
-    private const int MemoryShiftParameterLenght = 4;
-    private const int ArithmeticParameterLenght = 1;
+    private const int AddressLenght = 4; // represent lenght in bytes of address for jumps in cycles
+    private const int MemoryShiftParameterLenght = 4; // represent lenght in bytes of parameter for shifting in data memory
+    private const int ArithmeticParameterLenght = 1; // represents lenght in bytes of parameter of arithmetic instructions 
 
     public FirstLevelCodeRunner(byte[] code) : base(code)
     {
