@@ -67,23 +67,30 @@ Tento projekt se stará o překlad zdrojového kódu do předem definovaného by
 překlad zdrojového kódu do nějakého určitého bytekódu, všechny z těchto tříd dědí od abstraktní třídy `BytecodeGenerator`
 
 #### Soubor `SyntaxTreeGenerationClasses.cs`
-Tento soubor obsahuje třídy, které reprezentují program a jeho části v průběhu kompilace, pomocí těchto tříd se staví syntax
-tree celého programu, tyto třídy využívá pouze `SecondLevelBytecodeGenerator` a to konkrétně k tomu aby bylo jednodušší
-rozeznat instrukce Move data a Set memory zero při překladu programu. Soubor obsahuje tyto třídy:
+Tento soubor obsahuje třídy, které reprezentují kompilovaný program a jeho části v průběhu kompilace, pomocí těchto tříd 
+se staví syntax tree celého programu, tyto třídy využívá pouze `SecondLevelBytecodeGenerator` a to konkrétně k tomu aby 
+bylo jednodušší rozeznat instrukce Move data a Set memory zero při překladu programu. Soubor obsahuje tyto třídy:
 - `Operation` tato třída rerezentuje jednu instrukci byte kódu a to i s parametrem
   - třída má pouze virtuální funkci `AddBytes(List<byte> bytes)`, která danou instrukci přidá do `bytes` argumentu
 - `LoopStart : Operation`, tato třída reprezentuje cyklus v kódu, dědí od třídy `Operation`
+  - třída sice reprezentuje cyklus, ale ukončení cyklu musí být do cyklu přidáno stejným způsobem jako ostatní instrukce
   - třída má funcki `AddOperation(Operation operation)`, která přidá instrukci do cyklu při procházení kódu Brainfucku
-  - třída má dále funkce `IsSetMemoryZero`, `IsMoveDataStartDecrement` a `IsMoveDataStartShift`, které rozpoznají, jestli
-  cyklus lze nahradit za instrukce Move data nebo Set memory zero
+  - třída má dále funkce `IsSetMemoryZero()`, `IsMoveDataStartDecrement()` a `IsMoveDataStartShift()`, které rozpoznají, jestli
+    cyklus lze nahradit za instrukce Move data nebo Set memory zero
   - třída definuje vlastní implementaci virtuální metody `AddBytes(List<byte> bytes)`
 - `Program : LoopStart` tato třída reprezentuje celý překládaný program, dědí od třídy `LoopStart`, udržuje si informaci 
 o tom, jaký cyklus právě překládá a má zásobník všech cyklů, jak se postupně při překladaci zanořuje, o toto se třída
 stará na pozadí, třída má tyto metody:
-  - `AddOperation(Operation operation)`, která přidá instrukci do programu při procházení kódu Brainfucku
+  - `AddNewOperation(ExtendedInstructions opCode, byte[]? pars)`, která přidá instrukci do programu při procházení kódu Brainfucku
   - `SwapCurrentScope(ExtendedInstructions newInstructionOpCode, byte[]? pars)`, tato metoda vymění cyklus, který je 
   právě procházan za jednu instrukci
   - `SetLoopStartParams(byte[]? pars)`, která nastaví adresu skoku cyklu, ve chvíli, kdy už je tato adresa známá
+
+Při kompilaci stačí vytvořit jednu instanci třídy `Program` a přidávat do této instance pomocí metody 
+`AddNewOperation(ExtendedInstructions opCode, byte[]? pars)` instrukce. Pouze je potřeba ve chvíli, kdy program narazí na
+`]` instrukci, tak je potřeba manuálně pomocí metody `SetLoopStartParams(byte[]? pars)` nastavit adresu kam se má skákat ze
+začátku cyklu.
+
 ### BytecodeInterpreter
 Tento projekt se stará o interpretaci definovaných bytekódů,  obsahuje následující třídy:
 - `Interpreter`, třída, která se stará o vykonávání instrukcí bytekódu, který dostane na vykonání, pro interpretaci je
