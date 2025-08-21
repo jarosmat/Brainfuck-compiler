@@ -18,44 +18,37 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator
         switch (charToAdd)
         {
             case '+':
-                Bytes.Add((byte)SimpleInstructions.Increment);
-                Bytes.Add((byte)count);
+                AddInstruction((byte)SimpleInstructions.Increment, [(byte)count]);
                 break;
             case '-':
-                Bytes.Add((byte)SimpleInstructions.Decrement);
-                Bytes.Add((byte)count);
+                AddInstruction((byte)SimpleInstructions.Decrement, [(byte)count]);
                 break;
             case '<':
-                Bytes.Add((byte)SimpleInstructions.ShiftDataLeft);
-                ByteNumbersHandler.AddBytesToList(Bytes, count);
+                AddInstruction((byte)SimpleInstructions.ShiftDataLeft, count);
                 break;
             case '>':
-                Bytes.Add((byte)SimpleInstructions.ShiftDataRight);
-                ByteNumbersHandler.AddBytesToList(Bytes, count);
+                AddInstruction((byte)SimpleInstructions.ShiftDataRight, count);
                 break;
             case '.':
-                Bytes.Add((byte)SimpleInstructions.PrintValue);
+                AddInstruction((byte)SimpleInstructions.PrintValue, null);
                 break;
             case ',':
-                Bytes.Add((byte)SimpleInstructions.ReadValue);
+                AddInstruction((byte)SimpleInstructions.ReadValue, null);
                 break;
             case '[':
-                Bytes.Add((byte)SimpleInstructions.LeftBracket);
-                var bracket = new Bracket(Bytes.Count);
+                var bracket = new Bracket(Bytes.Count + 1);
                 BracketStack.Add(bracket);
-                ByteNumbersHandler.AddBytesToList(Bytes, 0);
+                AddInstruction((byte)SimpleInstructions.LeftBracket, 0);
                 break;
             case ']':
                 if (BracketStack.Count == 0)
                 {
                     throw new SyntaxErrorException("Invalid parenthesis");
                 }
-                Bytes.Add((byte)SimpleInstructions.RightBracket);
-                    
                 var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
-                    
-                ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
-                ByteNumbersHandler.AddBytesToList(Bytes ,bracketPopped.Address + AddressLenght);
+                ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght + 1);
+                
+                AddInstruction((byte)SimpleInstructions.RightBracket, bracketPopped.Address + AddressLenght);
                 
                 break;
         }

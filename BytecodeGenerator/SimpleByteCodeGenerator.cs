@@ -38,29 +38,21 @@ public class SimpleByteCodeGenerator : BytecodeGenerator
                     Bytes.Add((byte)SimpleInstructions.ReadValue);
                     break;
                 case '[':
-                    Bytes.Add((byte)SimpleInstructions.LeftBracket);
-                    var bracket = new Bracket(Bytes.Count);
+                    var bracket = new Bracket(Bytes.Count + 1);
                     BracketStack.Add(bracket);
-                    for (int i = 0; i < AddressLenght; i++)
-                    {
-                        Bytes.Add(0x00);
-                    }
+                    
+                    AddInstruction((byte)SimpleInstructions.LeftBracket, 0);
                     break;
                 case ']':
                     if (BracketStack.Count == 0)
                     {
                         throw new SyntaxErrorException("Invalid parenthesis");
                     }
-                    Bytes.Add((byte)SimpleInstructions.RightBracket);
-                    
+
                     var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+                    ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght + 1);
                     
-                    ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght);
-                    
-                    foreach (var byteToAdd in ByteNumbersHandler.GetBytes(bracketPopped.Address - 1))
-                    {
-                        Bytes.Add(byteToAdd);
-                    }
+                    AddInstruction((byte)SimpleInstructions.RightBracket, bracketPopped.Address - 1);
                     break;
                 }
                 currChar = StreamReader.Read();

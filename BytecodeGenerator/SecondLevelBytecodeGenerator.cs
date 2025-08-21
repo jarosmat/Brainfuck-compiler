@@ -13,46 +13,97 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
     private const int SetMemoryZeroSubstraction = 6;
     private const int MoveDataSubstraction = 13;
 
-    private int _programLenght = 4;
+    private int _programLenght = 4; // initial value is 4 because there will always be 4 byte fingerprint at the beginning
     
     private static readonly int[] InstructionLengths = [2, 2, 5, 5, 1, 1, 5, 5, 1, 6];
     public SecondLevelBytecodeGenerator(FileInfo file) : base(file, Fingerprint) { }
 
     public SecondLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
 
+    private void AddOperation(ExtendedInstructions opCode, byte[]? pars)
+    {
+        _syntaxTree.AddNewOperation(opCode, pars);
+        _programLenght += InstructionLengths[(int)opCode];
+    }
+    
+    private void AddOperation(ExtendedInstructions opCode, int par)
+    {
+        _syntaxTree.AddNewOperation(opCode, ByteNumbersHandler.GetBytes(par));
+        _programLenght += InstructionLengths[(int)opCode];
+    }
+
+    private void HandleMoveData(int incrementIndex)
+    {
+        _programLenght -= MoveDataSubstraction;
+        List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
+        
+        byte[] pars = new byte[5];
+        pars[0] = operations[incrementIndex].Parameters![0];
+        
+        Operation firstShift = operations[incrementIndex - 1];
+        byte[]? shift = firstShift.Parameters;
+        
+        if (firstShift.OpCode == ExtendedInstructions.ShiftDataLeft)
+        {
+            shift = ByteNumbersHandler.GetBytes( - ByteNumbersHandler.GetNumber(firstShift.Parameters));
+        }
+
+        for (int i = 0; i < 4; i++)
+        {
+            pars[i + 1] = shift![i];
+        }
+        _syntaxTree.SwapCurrentScope(ExtendedInstructions.MoveData, pars);   
+    }
+    
+    private bool HandleOptimizations(LoopStart loop)
+    {
+        bool result = false;
+        if (loop.IsSetMemoryZero())
+        {
+            result = true;
+            _programLenght -= SetMemoryZeroSubstraction;
+            _syntaxTree.SwapCurrentScope(ExtendedInstructions.SetMemoryZero, null);
+        }
+        else if (loop.IsMoveDataStartDecrement())
+        {
+            result = true;
+            HandleMoveData(2);
+        }
+        else if (loop.IsMoveDataStartShift())
+        {
+            result = true;
+            HandleMoveData(1);
+        }
+
+        return result;
+    }
+    
     private void AddOperation(int charToAdd, int count)
     {
         switch (charToAdd)
         {
             case '+':
-                _syntaxTree.AddNewOperation(ExtendedInstructions.Increment, [(byte)count]);
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.Increment];
+                AddOperation(ExtendedInstructions.Increment, [(byte)count]);
                 break;
             case '-':
-                _syntaxTree.AddNewOperation(ExtendedInstructions.Decrement, [(byte)count]);
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.Decrement];
+                AddOperation(ExtendedInstructions.Decrement, [(byte)count]);
                 break;
             case '<':
-                _syntaxTree.AddNewOperation(ExtendedInstructions.ShiftDataLeft, ByteNumbersHandler.GetBytes(count));
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.ShiftDataLeft];
+                AddOperation(ExtendedInstructions.ShiftDataLeft, count);
                 break;
             case '>':
-                _syntaxTree.AddNewOperation(ExtendedInstructions.ShiftDataRight, ByteNumbersHandler.GetBytes(count));
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.ShiftDataRight];
+                AddOperation(ExtendedInstructions.ShiftDataRight, count);
                 break;
             case '.':
-                _syntaxTree.AddNewOperation(ExtendedInstructions.PrintValue, null);
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.PrintValue];
+                AddOperation(ExtendedInstructions.PrintValue, null);
                 break;
             case ',':
-                _syntaxTree.AddNewOperation(ExtendedInstructions.ReadValue, null);
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.ReadValue];
+                AddOperation(ExtendedInstructions.ReadValue, null);
                 break;
             case '[':
-                _programLenght += InstructionLengths[(int)ExtendedInstructions.LeftBracket];
+                AddOperation(ExtendedInstructions.LeftBracket, null);
                 Bracket bracket = new Bracket(_programLenght);
                 BracketStack.Add(bracket);
-                _syntaxTree.AddNewOperation(ExtendedInstructions.LeftBracket, null);
                 break;
             case ']':
                 if (BracketStack.Count == 0)
@@ -62,52 +113,10 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
 
                 LoopStart loop = _syntaxTree.GetCurrentScope();
                 Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
-
-                if (loop.IsSetMemoryZero())
-                {
-                    _programLenght -= SetMemoryZeroSubstraction; 
-                    _syntaxTree.SwapCurrentScope(ExtendedInstructions.SetMemoryZero, null);
-                }
-                else if (loop.IsMoveDataStartDecrement())
-                {
-                    _programLenght -= MoveDataSubstraction;
-                    List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
-                    byte[] pars = new byte[5];
-                    pars[0] = operations[2].Parameters![0];
-                    Operation firstShift = operations[1];
-                    byte[]? shift = firstShift.Parameters;
-                    if (firstShift.OpCode == ExtendedInstructions.ShiftDataLeft)
-                    {
-                        shift = ByteNumbersHandler.GetBytes( - ByteNumbersHandler.GetNumber(firstShift.Parameters));
-                    }
-
-                    for (int i = 0; i < 4; i++)
-                    {
-                        pars[i + 1] = shift![i];
-                    }
-                    _syntaxTree.SwapCurrentScope(ExtendedInstructions.MoveData, pars);
-                }
-                else if (loop.IsMoveDataStartShift())
-                {
-                    _programLenght -= MoveDataSubstraction;
-                    List<Operation> operations = _syntaxTree.GetCurrentScope().Operations;
-                    byte[] pars = new byte[5];
-                    pars[0] = operations[1].Parameters![0];
-                    Operation firstShift = operations[0];
-                    byte[]? shift = firstShift.Parameters;
-                    if (firstShift.OpCode == ExtendedInstructions.ShiftDataLeft)
-                    {
-                        shift = ByteNumbersHandler.GetBytes( - ByteNumbersHandler.GetNumber(firstShift.Parameters));
-                    }
                 
-                    for (int i = 0; i < 4; i++)
-                    {
-                        pars[i + 1] = shift![i];
-                    }
-                    _syntaxTree.SwapCurrentScope(ExtendedInstructions.MoveData, pars);
-                }
-                else
+                if (!HandleOptimizations(loop))
                 {
+                    //can't AddOperation as in other cases because of implementation of Program : LoopStart.AddNewOperation
                     _programLenght += InstructionLengths[(int)ExtendedInstructions.RightBracket];
 
                     _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
@@ -115,7 +124,6 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                     _syntaxTree.AddNewOperation(ExtendedInstructions.RightBracket,
                         ByteNumbersHandler.GetBytes(bracketPopped.Address));
                 }
-
                 break;
         }
     }

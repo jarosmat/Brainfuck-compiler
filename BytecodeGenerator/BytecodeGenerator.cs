@@ -35,5 +35,17 @@ public abstract class BytecodeGenerator
         ByteNumbersHandler.AddBytesToList(Bytes, (int)fingerprint);
     }
 
+    protected void AddInstruction(byte instruction, byte[]? parameters)
+    {
+        Bytes.Add(instruction);
+        if (parameters != null)
+            Bytes.AddRange(parameters);
+    }
+    
+    protected void AddInstruction(byte instruction, int parameter)
+    {
+        Bytes.Add(instruction);
+        ByteNumbersHandler.AddBytesToList(Bytes, parameter);
+    }
     public abstract byte[] CreateByteCode();
 }

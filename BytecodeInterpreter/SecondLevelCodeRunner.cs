@@ -38,6 +38,7 @@ public class SecondLevelCodeRunner : FirstLevelCodeRunner
 
         int coefficient = Code[InstructionPointer];
         InstructionPointer += MoveDataCoefficientLenght;
+        
         var shift = ByteNumbersHandler.GetNumber(Code, InstructionPointer, MoveDataMemoryShift);
         InstructionPointer += MoveDataMemoryShift;
 
