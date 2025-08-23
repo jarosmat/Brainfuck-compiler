@@ -47,15 +47,21 @@ public abstract class CodeRunner
         Console.Write(Utf8.GetString(bytes));
     }
 
-    protected void ReadValue()
+    private byte GetByteIn()
     {
         var intIn = Console.Read();
         char[] charIn = [(char)intIn];
         var bytes = Utf8.GetBytes(charIn);
-        if (bytes[0] == 13)
+        return bytes[0];
+    }
+    
+    protected void ReadValue()
+    {
+        byte inByte = GetByteIn();
+        if (inByte == 13)
         {
-            bytes[0] = 10; // this is just to avoid issues with line breaks on different operating systems 
+            inByte = 10; // this is just to avoid issues with line breaks on different operating systems 
         }
-        Memory[DataPointer] = bytes[0];
+        Memory[DataPointer] = inByte;
     }
 }

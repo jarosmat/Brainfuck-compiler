@@ -28,6 +28,26 @@ public class SecondLevelCodeRunner : FirstLevelCodeRunner
         Memory[DataPointer] = 0;
     }
 
+    private int GetCoefficient()
+    {
+        int coefficient = Code[InstructionPointer];
+        InstructionPointer += MoveDataCoefficientLenght;
+        return coefficient;
+    }
+
+    private int GetShift()
+    {
+        var shift = ByteNumbersHandler.GetNumber(Code, InstructionPointer, MoveDataMemoryShift);
+        InstructionPointer += MoveDataMemoryShift;
+        return shift;
+    }
+
+    private void MoveData(int shift, int coefficient)
+    {
+        Memory[DataPointer + shift] += (byte)(Memory[DataPointer] * coefficient);
+        Memory[DataPointer] = 0;   
+    }
+    
     private void MoveData()
     {
         if (Memory[DataPointer] == 0)
@@ -36,13 +56,10 @@ public class SecondLevelCodeRunner : FirstLevelCodeRunner
             return;
         }
 
-        int coefficient = Code[InstructionPointer];
-        InstructionPointer += MoveDataCoefficientLenght;
-        
-        var shift = ByteNumbersHandler.GetNumber(Code, InstructionPointer, MoveDataMemoryShift);
-        InstructionPointer += MoveDataMemoryShift;
+        var coefficient = GetCoefficient();
 
-        Memory[DataPointer + shift] += (byte)(Memory[DataPointer] * coefficient);
-        Memory[DataPointer] = 0;
+        var shift = GetShift();
+        
+        MoveData(shift, coefficient);
     }
 }
