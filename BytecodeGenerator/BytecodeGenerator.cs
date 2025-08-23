@@ -1,3 +1,4 @@
+using System.Data;
 using Utilities;
 
 namespace BytecodeGenerator;
@@ -48,4 +49,24 @@ public abstract class BytecodeGenerator
         ByteNumbersHandler.AddBytesToList(Bytes, parameter);
     }
     public abstract byte[] CreateByteCode();
+    
+    protected void AddLoopStart(byte instruction)
+    {
+        var bracket = new Bracket(Bytes.Count + 1);
+        AddInstruction(instruction, 0);
+        BracketStack.Add(bracket);
+    }
+    
+    protected void AddLoopEnd(byte instruction, int addressOffset)
+    {
+        if (BracketStack.Count == 0)
+        {
+            throw new SyntaxErrorException("Invalid parenthesis");
+        }
+        
+        var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+        ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght + 1);
+                
+        AddInstruction(instruction, bracketPopped.Address + addressOffset);
+    }
 }

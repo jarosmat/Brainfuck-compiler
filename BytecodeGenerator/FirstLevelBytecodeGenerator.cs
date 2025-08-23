@@ -36,20 +36,10 @@ public class FirstLevelBytecodeGenerator : BytecodeGenerator
                 AddInstruction((byte)SimpleInstructions.ReadValue, null);
                 break;
             case '[':
-                var bracket = new Bracket(Bytes.Count + 1);
-                BracketStack.Add(bracket);
-                AddInstruction((byte)SimpleInstructions.LeftBracket, 0);
+                AddLoopStart( (byte)SimpleInstructions.LeftBracket);
                 break;
             case ']':
-                if (BracketStack.Count == 0)
-                {
-                    throw new SyntaxErrorException("Invalid parenthesis");
-                }
-                var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
-                ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght + 1);
-                
-                AddInstruction((byte)SimpleInstructions.RightBracket, bracketPopped.Address + AddressLenght);
-                
+                AddLoopEnd((byte)SimpleInstructions.RightBracket, AddressLenght);
                 break;
         }
     }
