@@ -78,6 +78,35 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
         return result;
     }
     
+    private void AddLoopStart(ExtendedInstructions instruction)
+    {
+        AddOperation(instruction, null);
+        var bracket = new Bracket(_programLenght);
+        BracketStack.Add(bracket);
+    }
+
+    private void AddLoopEnd(ExtendedInstructions instruction)
+    {
+        if (BracketStack.Count == 0)
+        {
+            throw new SyntaxErrorException("Invalid parenthesis");
+        }
+
+        var loop = _syntaxTree.GetCurrentScope();
+        var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+                
+        if (!HandleOptimizations(loop))
+        {
+            //can't AddOperation as in other cases because of implementation of Program : LoopStart.AddNewOperation
+            _programLenght += InstructionLengths[(int)instruction];
+
+            _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
+
+            _syntaxTree.AddNewOperation(instruction,
+                ByteNumbersHandler.GetBytes(bracketPopped.Address));
+        }   
+    }
+    
     private void AddOperation(int charToAdd, int count)
     {
         switch (charToAdd)
@@ -101,29 +130,10 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
                 AddOperation(ExtendedInstructions.ReadValue, null);
                 break;
             case '[':
-                AddOperation(ExtendedInstructions.LeftBracket, null);
-                Bracket bracket = new Bracket(_programLenght);
-                BracketStack.Add(bracket);
+                AddLoopStart(ExtendedInstructions.LeftBracket);
                 break;
             case ']':
-                if (BracketStack.Count == 0)
-                {
-                    throw new SyntaxErrorException("Invalid parenthesis");
-                }
-
-                LoopStart loop = _syntaxTree.GetCurrentScope();
-                Bracket bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
-                
-                if (!HandleOptimizations(loop))
-                {
-                    //can't AddOperation as in other cases because of implementation of Program : LoopStart.AddNewOperation
-                    _programLenght += InstructionLengths[(int)ExtendedInstructions.RightBracket];
-
-                    _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
-
-                    _syntaxTree.AddNewOperation(ExtendedInstructions.RightBracket,
-                        ByteNumbersHandler.GetBytes(bracketPopped.Address));
-                }
+                AddLoopEnd(ExtendedInstructions.RightBracket);
                 break;
         }
     }
