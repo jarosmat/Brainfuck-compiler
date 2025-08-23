@@ -10,7 +10,7 @@ public abstract class BytecodeGenerator
         public int Address { get; private set; } = address;
     }
 
-    protected readonly List<Bracket> BracketStack;
+    protected readonly Stack<Bracket> BracketStack;
     protected const int AddressLenght = 4;
     protected readonly TextReader StreamReader;
     protected readonly List<byte> Bytes;
@@ -54,7 +54,7 @@ public abstract class BytecodeGenerator
     {
         var bracket = new Bracket(Bytes.Count + 1);
         AddInstruction(instruction, 0);
-        BracketStack.Add(bracket);
+        BracketStack.Push(bracket);
     }
     
     protected void AddLoopEnd(byte instruction, int addressOffset)
@@ -63,8 +63,8 @@ public abstract class BytecodeGenerator
         {
             throw new SyntaxErrorException("Invalid parenthesis");
         }
-        
-        var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+
+        var bracketPopped = BracketStack.Pop();
         ByteNumbersHandler.SetBytesInList(Bytes, bracketPopped.Address, AddressLenght, Bytes.Count + AddressLenght + 1);
                 
         AddInstruction(instruction, bracketPopped.Address + addressOffset);

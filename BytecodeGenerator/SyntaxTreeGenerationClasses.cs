@@ -82,7 +82,7 @@ public class LoopStart(byte[]? pars) : Operation(ExtendedInstructions.LeftBracke
     
 public class Program : LoopStart
 {
-    private readonly List<LoopStart> _scopeStack = [];
+    private readonly Stack<LoopStart> _scopeStack = [];
     private LoopStart _currentScope;
 
     public Program() : base(null)
@@ -94,13 +94,13 @@ public class Program : LoopStart
     {
         if (opCode == ExtendedInstructions.LeftBracket)
         {
-            _scopeStack.Add(_currentScope);
+            _scopeStack.Push(_currentScope);
             _currentScope = new LoopStart(pars);
         }
         else if (opCode == ExtendedInstructions.RightBracket)
         {
             _currentScope.AddOperation(new Operation(opCode, pars));
-            LoopStart newScope = NotRelatedFunctions.PopFromList(_scopeStack);
+            var newScope = _scopeStack.Pop();
             newScope.AddOperation(_currentScope);
             _currentScope = newScope;
         }
@@ -117,7 +117,7 @@ public class Program : LoopStart
 
     public void SwapCurrentScope(ExtendedInstructions newInstructionOpCode, byte[]? pars)
     {
-        _currentScope = NotRelatedFunctions.PopFromList(_scopeStack);
+        _currentScope = _scopeStack.Pop();
         _currentScope.AddOperation(new Operation(newInstructionOpCode, pars));
     }
     

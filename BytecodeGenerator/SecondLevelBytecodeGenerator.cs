@@ -82,7 +82,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
     {
         AddOperation(instruction, null);
         var bracket = new Bracket(_programLenght);
-        BracketStack.Add(bracket);
+        BracketStack.Push(bracket);
     }
 
     private void AddLoopEnd(ExtendedInstructions instruction)
@@ -93,7 +93,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
         }
 
         var loop = _syntaxTree.GetCurrentScope();
-        var bracketPopped = NotRelatedFunctions.PopFromList(BracketStack);
+        var bracketPopped = BracketStack.Pop();
                 
         if (!HandleOptimizations(loop))
         {
