@@ -15,7 +15,20 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
 
     private int _programLenght = 4; // initial value is 4 because there will always be 4 byte fingerprint at the beginning
     
-    private static readonly int[] InstructionLengths = [2, 2, 5, 5, 1, 1, 5, 5, 1, 6];
+    // private static readonly int[] InstructionLengths = [2, 2, 5, 5, 1, 1, 5, 5, 1, 6];
+    private static readonly Dictionary<ExtendedInstructions, int> InstructionLengths = new Dictionary<ExtendedInstructions, int>()
+    {
+        {ExtendedInstructions.Increment, 2},
+        {ExtendedInstructions.Decrement, 2},
+        {ExtendedInstructions.ShiftDataLeft, 5},
+        {ExtendedInstructions.ShiftDataRight, 5},
+        {ExtendedInstructions.PrintValue, 1},
+        {ExtendedInstructions.ReadValue, 1},
+        {ExtendedInstructions.LeftBracket, 5},
+        {ExtendedInstructions.RightBracket, 5},
+        {ExtendedInstructions.SetMemoryZero, 1},
+        {ExtendedInstructions.MoveData, 6}
+    };
     public SecondLevelBytecodeGenerator(FileInfo file) : base(file, Fingerprint) { }
 
     public SecondLevelBytecodeGenerator(TextReader streamReader) : base(streamReader, Fingerprint){ }
@@ -23,13 +36,13 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
     private void AddOperation(ExtendedInstructions opCode, byte[]? pars)
     {
         _syntaxTree.AddNewOperation(opCode, pars);
-        _programLenght += InstructionLengths[(int)opCode];
+        _programLenght += InstructionLengths[opCode];
     }
     
     private void AddOperation(ExtendedInstructions opCode, int par)
     {
         _syntaxTree.AddNewOperation(opCode, ByteNumbersHandler.GetBytes(par));
-        _programLenght += InstructionLengths[(int)opCode];
+        _programLenght += InstructionLengths[opCode];
     }
 
     private void HandleMoveData(int incrementIndex)
@@ -98,7 +111,7 @@ public class SecondLevelBytecodeGenerator : BytecodeGenerator
         if (!HandleOptimizations(loop))
         {
             //can't AddOperation as in other cases because of implementation of Program : LoopStart.AddNewOperation
-            _programLenght += InstructionLengths[(int)instruction];
+            _programLenght += InstructionLengths[instruction];
 
             _syntaxTree.SetLoopStartParams(ByteNumbersHandler.GetBytes(_programLenght));
 
