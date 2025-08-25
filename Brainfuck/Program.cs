@@ -2,7 +2,6 @@
 using BytecodeInterpreter;
 using Utilities;
 using System.CommandLine;
-using System.Diagnostics;
 
 namespace Brainfuck;
 
@@ -20,12 +19,6 @@ internal static class Program
         {
             Description = "Version of bytecode to use: 0 for Simple, 1 for first level, 2 for second level",
             DefaultValueFactory = _ => 2
-        };
-
-        var timeOption = new Option<bool>("-t")
-        {
-            Description = "Time bytecode execution time",
-            DefaultValueFactory = _ => false
         };
 
         var dumpBytecode = new Option<FileInfo>("-b")
@@ -48,7 +41,6 @@ internal static class Program
         rootCommand.Options.Add(versionOption);
         rootCommand.Arguments.Add(file);
         rootCommand.Options.Add(dumpBytecode);
-        rootCommand.Options.Add(timeOption);
         
         
         rootCommand.SetAction(parseResult =>
@@ -69,28 +61,15 @@ internal static class Program
             bytecodeGenerator = factory.GetBytecodeGenerator(genType, new FileInfo(filePath));
 
             var bytes = bytecodeGenerator.CreateByteCode();
-
-
-            var codeRunner = codeRunnerFactory.GetCodeRunner(bytes);
-            
-            if (parseResult.GetValue(timeOption))
-            {
-                var watch = new Stopwatch();
-                watch.Start();
-                interpreter.Run(codeRunner);
-                watch.Stop();
-                Console.WriteLine($"Bytecode execution time: {watch.Elapsed.TotalSeconds}");
-            }
-            else
-            {
-                interpreter.Run(codeRunner);
-            }
-            
             var bytecodeDump = parseResult.GetValue(dumpBytecode);
             if (bytecodeDump != null)
             {
                 AssemblyTranslator.PrintAssembly(bytes, bytecodeDump.CreateText());
             }
+            
+            var codeRunner = codeRunnerFactory.GetCodeRunner(bytes);
+            interpreter.Run(codeRunner);
+            
             
             return 0;
         });
